@@ -6,7 +6,7 @@ public class PlayerDatabase
     // Connection details
     private static final String URL = "jdbc:postgresql://localhost:5432/photon";
     private static final String USER = "student";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "student";
     
     // Method to connect to database
     private Connection connect() throws SQLException {
