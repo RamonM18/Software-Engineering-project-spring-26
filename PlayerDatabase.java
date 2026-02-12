@@ -34,12 +34,41 @@ public class PlayerDatabase
         
         return codename;
     }
-    
+
+
+    //adding player method
+    public void addPlayer(int id, String codename)
+    {
+        String sql = "INSERT INTO players (id, codename) VALUES (?, ?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1,id);
+            pstmt.setString(2, codename);
+            pstmt.executeUpdate();
+
+            System.out.println("Player has been added!");
+
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+    }
     // Test it
     public static void main(String[] args) {
         PlayerDatabase db = new PlayerDatabase();
+
+        //getting existing player info
         String name = db.getCodename(1);  // Should return "Opus"
         System.out.println("Codename: " + name);
+
+        //testing add player
+        db.addPlayer(500,"Ramon");
+
+        //print to show it was added
+        String newName = db.getCodename(500);
+        System.out.println("New Player: " + newName);
     }
 
     
