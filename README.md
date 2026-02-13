@@ -13,7 +13,7 @@ Table with team members' name and username
 
 ## Sprint 2 Overview
 
-For Sprint 2, our team comppleted the following:
+For Sprint 2, our team completed the following:
 
 - Created team Github repository
 - Implemented splash screen
@@ -27,5 +27,33 @@ For Sprint 2, our team comppleted the following:
 - Created Trello task assignments for each team member
 - Each team member made at least one programming commit
 - Included install script for project setup
+
+## How the Program Works
+
+When the program starts:
+- A spash screen is displayed for a few seconds
+- The system automatically transitions to the Player Entry Screen
+
+Player Entry Screen:
+- User enters player ID
+- Application connects to the PostSQL database
+- If player ID is found, the codename is retrieved
+- If player ID is not found, user is prompted to enter a new codename
+- User enters equipment ID
+- Equipment ID is broadcasted using UDP on port 7500
+The database communication allows two main operations:
+- These operations allows the user to add 
+- Check for existing players
+The network communication uses two UDP sockets:
+- Port 7500 for broadcasting
+- Port 7501 for receiving
+
+
+## Project structure
+
+Player class: This stores information about the player and score
+GUI: Splash screen and player entry screen
+Database connection: Handles PostgreSQL communication
+UDP socket: Handle broadcasting equipment IDs
 
 
