@@ -5,15 +5,15 @@ public class Player
     private int playerNum;
     private String playerName;
     private int score = 0;
-    private boolean isRedTeam;
+    private int teamCode;
 
-    public Player(String playerName, boolean isRedTeam)
+
+    public Player(String playerName, int teamCode)
     {
-        this.playerNum = nextPlayerNum;
-        nextPlayerNum++;
+        this.playerNum = nextPlayerNum++;
         this.playerName = playerName;
         this.score = 0;
-        this.isRedTeam = isRedTeam;
+        this.teamCode = teamCode;
     }
 
     public Player(Player p)
@@ -21,7 +21,7 @@ public class Player
         this.playerNum = p.playerNum;
         this.playerName = p.playerName;
         this.score = p.score;
-        this.isRedTeam = p.isRedTeam;
+        this.teamCode = p.teamCode;
     }
 
     public String getPlayerName()
@@ -39,14 +39,25 @@ public class Player
         return score;
     }
 
-    public boolean getTeam()
+    public static int getNextPlayerNum()
     {
-        return isRedTeam;
+        return nextPlayerNum;
     }
 
-    public void setPlayerName(String playerName)
+    public String getTeam()
     {
-        this.playerName = playerName;
+        if (teamCode == 1) 
+        {
+            return "Red";
+        }
+        else if (teamCode == 2) 
+        {
+            return "Green";
+        }
+        else 
+        {
+            return "Unassigned";
+        }
     }
 
     public void setScore(int score)
@@ -59,31 +70,12 @@ public class Player
         this.playerNum = playerNum;
     }
 
-    public void setTeam(boolean isRedTeam)
+    public String getPlayerInfo()
     {
-        this.isRedTeam = isRedTeam;
-    }
-
-    public String getPlayer()
-    {
-        String result = "";
-        String teamName = "";
-
-        if (isRedTeam)
-        {
-            teamName = "Red";
-        }
-        else {
-            teamName = "Green";
-        }
-
-        result = "Player number: " + playerNum;
-        result = result + ", Name: " + playerName;
-        result = result + ", Score: " + score;
-        result = result + ", Team: " + teamName;
-
-        return result;
-
+        return "Player Number: " + playerNum
+        + ", Name: " + playerName
+        + ", Score: " + score
+        + ", Team: " + getTeam();
 
     }
 
@@ -101,19 +93,8 @@ public class Player
 
     public static void main(String[] args) 
     {
-        //Testing my code here
-        Player p1 = new Player("Kyle", true);
-        Player p2 = new Player("Ramon", false);
-
-        System.out.println(p1.getPlayer());
-        System.out.println(p2.getPlayer());
-
-        p1.addScore(30);
-        p2.subtractScore(10);
-
-        System.out.println("\nResults\n");
-        System.out.println(p1.getPlayer());
-        System.out.println(p1.getPlayer());
+        
+       
     }
     
 }
