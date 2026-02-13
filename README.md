@@ -41,10 +41,10 @@ Player Entry Screen:
 - If player ID is not found, user is prompted to enter a new codename
 - User enters equipment ID
 - Equipment ID is broadcasted using UDP on port 7500
-The database communication allows two main operations:
+Database allows for two main operations:
 - These operations allows the user to add 
 - Check for existing players
-The network communication uses two UDP sockets:
+Network Communication Uses Two UDP Sockets
 - Port 7500 for broadcasting
 - Port 7501 for receiving
 
