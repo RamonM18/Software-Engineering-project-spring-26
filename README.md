@@ -41,19 +41,21 @@ Player Entry Screen:
 - If player ID is not found, user is prompted to enter a new codename
 - User enters equipment ID
 - Equipment ID is broadcasted using UDP on port 7500
+
 Database allows for two main operations:
-- These operations allows the user to add 
-- Check for existing players
+  - These operations allows the user to add 
+  - Check for existing players
+
 Network Communication Uses Two UDP Sockets
-- Port 7500 for broadcasting
-- Port 7501 for receiving
+  - Port 7500 for broadcasting
+  - Port 7501 for receiving
 
 
 ## Project structure
 
-Player class: This stores information about the player and score
-GUI: Splash screen and player entry screen
-Database connection: Handles PostgreSQL communication
-UDP socket: Handle broadcasting equipment IDs
+Player Class - This stores information about the player and score
+GUI - Splash screen and player entry screen
+Database Connection - Handles PostgreSQL communication
+UDP Sockets - Handles broadcast equipment IDs
 
 
