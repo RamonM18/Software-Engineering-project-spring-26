@@ -53,9 +53,9 @@ Network Communication Uses Two UDP Sockets
 
 ## Project structure
 
-Player Class - This stores information about the player and score
-GUI - Splash screen and player entry screen
-Database Connection - Handles PostgreSQL communication
-UDP Sockets - Handles broadcast equipment IDs
+- **Player Class** - This stores information about the player and score
+- **GUI** - Splash screen and player entry screen
+- **Database Connection** - Handles PostgreSQL communication
+- **UDP Sockets** - Handles broadcasting equipment IDs
 
 
