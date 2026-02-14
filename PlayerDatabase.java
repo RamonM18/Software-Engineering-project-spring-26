@@ -39,6 +39,7 @@ public class PlayerDatabase
     //adding player method
     public void addPlayer(int id, String codename)
     {
+        //write if statement that is mod player 2 to figure out if they are even or odd. do if else, if 1 then even else 0 
         String sql = "INSERT INTO players (id, codename) VALUES (?, ?)";
 
         try(Connection conn = connect();
