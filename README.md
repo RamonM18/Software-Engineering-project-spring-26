@@ -10,6 +10,28 @@ Table with team members' name and username
 | Michael Knepler | MichaelK6       |
 | Steven Hale     | StevenHale11    |
 
+## How to run the program
+### First time setup
+1. login to the VM with username and password: student
+2. open terminal and go to home directory
+3. cd ~
+4. sudo apt-get update
+   - If it asks for a password, use student
+6. Clone the repository
+   - git clone https://github.com/RamonM18/Software-Engineering-project-spring-26.git
+7. Navigate to the project
+    - cd ~/Software-Engineering-project-spring-26
+8. Run the install script and it will have directions for you in the terminal on how to compile and run the program
+    - bash install.sh
+
+### Running the program after first time setup
+1. Navigate to project directory
+   - cd ~/Software-Engineering-project-spring-26
+2. Pull changes from GitHub
+   - git pull origin main
+3. Compile and run
+   - javac -cp ".:lib/postgresql-42.7.1.jar" *.java
+   - java -cp ".:lib/postgresql-42.7.1.jar" Main
 
 ## Sprint 2 Overview
 
