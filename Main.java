@@ -8,7 +8,7 @@ public class Main {
         // Create the main frame
         JFrame frame = new JFrame("Player Setup");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(800, 600);
         frame.setLocationRelativeTo(null); // Center on screen
 
         // Display splash screen
@@ -60,7 +60,7 @@ public class Main {
         JDialog splash = new JDialog(frame, "Splash", false);
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage();
-        Image scaledImage = img.getScaledInstance(600,400,Image.SCALE_SMOOTH);
+        Image scaledImage = img.getScaledInstance(800,600,Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
         JLabel label = new JLabel(scaledIcon);
         splash.getContentPane().add(label);
