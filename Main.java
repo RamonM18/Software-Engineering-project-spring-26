@@ -57,20 +57,23 @@ public class Main {
 
     // Method to display splash screen
     private static void showSplashScreen(JFrame frame, String imagePath) {
-        JDialog splash = new JDialog(frame, "Splash", true);
+        JDialog splash = new JDialog(frame, "Splash", false);
         ImageIcon icon = new ImageIcon(imagePath);
-        JLabel label = new JLabel(icon);
+        Image img = icon.getImage();
+        Image scaledImage = img.getScaledInstance(600,400,Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel label = new JLabel(scaledIcon);
         splash.getContentPane().add(label);
         splash.pack();
         splash.setLocationRelativeTo(null);
 
         // Display splash for 3 seconds
-        new Thread(() -> {
+        //new Thread(() -> {
             splash.setVisible(true);
-        }).start();
+       // }).start();
 
         try {
-            Thread.sleep(3000); // 3 seconds
+            Thread.sleep(6000); // 6 seconds
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
