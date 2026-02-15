@@ -31,7 +31,7 @@ Table with team members' name and username
    - git pull origin main
 3. Compile and run
    - javac -cp ".:lib/postgresql-42.7.1.jar" *.java
-   - java -cp ".:lib/postgresql-42.7.1.jar" Main
+   - java -cp ".:lib/postgresql-42.7.1.jar" LaserTagMain
 
 ## Sprint 2 Overview
 
