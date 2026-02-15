@@ -6,6 +6,7 @@ public class LaserTagMain {
 
     public static void main(String[] args) {
         // Create the main frame
+        PlayerDatabase db = new PlayerDatabase();
         JFrame frame = new JFrame("Player Setup");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -34,16 +35,43 @@ public class LaserTagMain {
         // Create player list
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 1; i <= numPlayers; i++) {
-            String name = null;
-            while (name == null || name.trim().isEmpty()) {
-                name = JOptionPane.showInputDialog(frame, "Enter name for Player " + i + ":");
-                if (name == null) { // User pressed cancel
+            //String name = null;
+            int playerID = 0;
+            while (playerID <= 0) {
+                String input = JOptionPane.showInputDialog(frame, "Enter ID for Player " + i + ":");
+                if (input == null) { // User pressed cancel
                     System.exit(0);
+                }
+
+                try {
+                    playerID = Integer.parseInt(input);
+                }
+                catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(frame, "Invaild id");
                 }
             }
             // For simplicity, assign all players to team 1 
-            players.add(new Player(name, 1));
+            // players.add(new Player(playerID, 1));
+
+            String codename = db.getCodename(playerID);
+
+            if (codename == null) {
+                // Player not found → ask for codename
+                codename = JOptionPane.showInputDialog(frame, "Enter codename for new player:");
+                if (codename == null) System.exit(0);
+
+                db.addPlayer(playerID, codename);
+            }
+
+            // 🔹 Assign team (even = Red, odd = Green)
+            int teamCode = (playerID % 2 == 0) ? 1 : 2;
+
+            // 🔹 Create Player object
+            Player player = new Player(codename, teamCode);
+            players.add(player);
         }
+
+
 
         // Show all players
         StringBuilder sb = new StringBuilder("Players created:\n");
