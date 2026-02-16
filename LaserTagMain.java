@@ -74,7 +74,29 @@ public class LaserTagMain {
             System.out.println("Player eequipment code: " + UDPConnectionMain.recvfrom());
         }
 
-
+        String input = JOptionPane.showInputDialog(frame, "Enter new IP address:");
+        if (input == null) { // User pressed cancel
+            System.exit(0);
+        }
+        try {
+            String[] fields = input.split(".");
+            boolean validInput = true;
+            for (int i = 0; i < fields.length; i++)
+            {
+                if (fields[i].isEmpty())
+                {
+                    validInput = false;
+                }
+            }
+            if (fields.length != 4 || !validInput) {
+                JOptionPane.showMessageDialog(frame, "Invalid IP Address.");
+            } else
+            {
+                UDPConnectionMain.setNetworkAddress(input);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frame, "Invalid IP Address. Try again.");
+        }
 
         // Show all players
         StringBuilder sb = new StringBuilder("Players created:\n");
