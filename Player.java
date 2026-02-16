@@ -6,7 +6,7 @@ public class Player
     private String playerName;
     private int score = 0;
     private int teamCode;
-
+    private UDPConnection playerConnection;
 
     public Player(String playerName, int teamCode)
     {
@@ -14,6 +14,7 @@ public class Player
         this.playerName = playerName;
         this.score = 0;
         this.teamCode = teamCode;
+        this.playerConnection = new UDPConnection();
     }
 
     public Player(Player p)
@@ -22,6 +23,7 @@ public class Player
         this.playerName = p.playerName;
         this.score = p.score;
         this.teamCode = p.teamCode;
+        this.playerConnection = new UDPConnection();
     }
 
     public String getPlayerName()
@@ -60,6 +62,11 @@ public class Player
         }
     }
 
+    public UDPConnection getConnection()
+    {
+        return playerConnection;
+    }
+
     public void setScore(int score)
     {
         this.score = score;
@@ -89,7 +96,6 @@ public class Player
     {
         this.score -= points;
     }
-
 
     public static void main(String[] args) 
     {
