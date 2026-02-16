@@ -1,6 +1,6 @@
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class LaserTagMain {
 
@@ -69,6 +69,8 @@ public class LaserTagMain {
             // 🔹 Create Player object
             Player player = new Player(codename, teamCode);
             players.add(player);
+            player.getConnection().sendTo(playerID);
+            System.out.println("Player equipment code: " + player.getConnection().recvfrom());
         }
 
 
@@ -101,7 +103,7 @@ public class LaserTagMain {
        // }).start();
 
         try {
-            Thread.sleep(3000); // 3 seconds
+            Thread.sleep(6000); // 6 seconds
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
