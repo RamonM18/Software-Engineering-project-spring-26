@@ -101,7 +101,7 @@ public class LaserTagMain {
        // }).start();
 
         try {
-            Thread.sleep(6000); // 6 seconds
+            Thread.sleep(3000); // 3 seconds
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
