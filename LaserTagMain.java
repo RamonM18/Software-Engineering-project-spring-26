@@ -8,6 +8,7 @@ public class LaserTagMain {
         // Create the main frame
         PlayerDatabase db = new PlayerDatabase();
         JFrame frame = new JFrame("Player Setup");
+        UDPConnection UDPConnectionMain = new UDPConnection();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null); // Center on screen
@@ -69,8 +70,8 @@ public class LaserTagMain {
             // 🔹 Create Player object
             Player player = new Player(codename, teamCode);
             players.add(player);
-            player.getConnection().sendTo(playerID);
-            System.out.println("Player equipment code: " + player.getConnection().recvfrom());
+            UDPConnectionMain.sendTo(playerID);
+            System.out.println("Player eequipment code: " + UDPConnectionMain.recvfrom());
         }
 
 

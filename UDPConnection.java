@@ -11,6 +11,10 @@ public class UDPConnection {
     public UDPConnection() {
         try {
             this.targetAddress = InetAddress.getByName("127.0.0.1");
+            this.senderSocket = new DatagramSocket(null);
+            this.receiverSocket = new DatagramSocket(null);
+            this.senderSocket.setReuseAddress(true);
+            this.receiverSocket.setReuseAddress(true);
             this.senderSocket = new DatagramSocket(7500);
             this.receiverSocket = new DatagramSocket(7501);
             this.receiverSocket.setSoTimeout(10);
