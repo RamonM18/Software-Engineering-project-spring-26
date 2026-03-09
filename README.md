@@ -30,8 +30,7 @@ Table with team members' name and username
 2. Pull changes from GitHub
    - git pull origin main
 3. Compile and run
-   - javac -cp ".:lib/postgresql-42.7.1.jar" *.java
-   - java -cp ".:lib/postgresql-42.7.1.jar" LaserTagMain
+   - python3 main.py
 
 ## Sprint 2 Overview
 
