@@ -13,9 +13,9 @@ sudo apt-get update
 echo "Installing Python3, pip and postgreSQL driver"
 sudo apt-get install -y python3 python3-pip python3-psycopg2
 
-# Install pygame for GUI
-echo "Installing pygame for GUI"
-pip3 install pygame --break-system-packages
+# Install tkinter
+echo "Installing tkinter for GUI"
+sudo apt-get install -y python3-tk
 
 echo ""
 echo "Installation complete!"
