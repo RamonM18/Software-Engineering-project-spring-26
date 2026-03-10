@@ -30,7 +30,7 @@ Table with team members' name and username
 2. Pull changes from GitHub
    - git pull origin main
 3. Compile and run
-   - python3 main.py
+   - python3 LaserTagmain.py
 
 ## Sprint 2 Overview
 
