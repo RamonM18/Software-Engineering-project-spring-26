@@ -21,6 +21,6 @@ echo ""
 echo "Installation complete!"
 echo ""
 echo "To run the project:"
-echo "python3 main.py"
+echo "python3 LaserTagMain.py"
 
 
