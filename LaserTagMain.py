@@ -160,22 +160,72 @@ class LaserTagMain:
             messagebox.showerror("Error", "No players entered.")
             return
 
-        for p in players:
+        red_team = []
+        green_team = []
 
+        for p in players:
+            if p.team_code == 1:
+                red_team.append(p)
+            else:
+                green_team.append(p)
+
+        for p in players:
             try:
                 self.udp_connection.send_to(p.get_player_id())
                 response = self.udp_connection.recv_from()
                 print("Equipment code:", response)
-
             except Exception as e:
                 print("UDP error:", e)
 
-        result = "Players in game:\n\n"
+        self.show_play_action_screen(red_team, green_team)
 
-        for p in players:
-            result += p.get_player_info() + "\n"
+    def show_play_action_screen(self, red_team, green_team):
 
-        messagebox.showinfo("Game Started", result)
+        game_window = tk.Toplevel(self.root)
+        game_window.title("Current Game Action")
+        game_window.configure(bg="black")
+        game_window.geometry("900x600")
+
+        score_frame = tk.Frame(game_window, bg="black")
+        score_frame.pack(pady=10)
+
+        red_frame = tk.Frame(score_frame, bg="black")
+        red_frame.pack(side="left", padx=80)
+
+        tk.Label(red_frame, text="RED TEAM", fg="red", bg="black", font=("Arial", 16)).pack()
+        tk.Label(red_frame, text="0", fg="red", bg="black", font=("Arial", 20)).pack()
+
+        for p in red_team:
+            tk.Label(red_frame, text=p.codename, fg="white", bg="black").pack()
+
+        green_frame = tk.Frame(score_frame, bg="black")
+        green_frame.pack(side="right", padx=80)
+
+        tk.Label(green_frame, text="GREEN TEAM", fg="lime", bg="black", font=("Arial", 16)).pack()
+        tk.Label(green_frame, text="0", fg="lime", bg="black", font=("Arial", 20)).pack()
+
+        for p in green_team:
+            tk.Label(green_frame, text=p.codename, fg="white", bg="black").pack()
+
+        action_frame = tk.Frame(game_window, bg="black")
+        action_frame.pack(pady=20)
+
+        tk.Label(action_frame, text="Current Game Action",
+                 fg="white", bg="black", font=("Arial", 14)).pack()
+
+        action_log = tk.Text(action_frame,
+                             width=70,
+                             height=15,
+                             bg="navy",
+                             fg="white")
+        action_log.pack()
+
+        timer_label = tk.Label(game_window,
+                               text="Time Remaining: 6:00",
+                               fg="white",
+                               bg="black",
+                               font=("Arial", 16))
+        timer_label.pack(pady=10)
 
     def edit_game(self):
         print("Edit Game")
