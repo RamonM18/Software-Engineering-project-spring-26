@@ -2,10 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
-# Assume these exist
-# from player import Player
-# from player_database import PlayerDatabase
-# from udp_connection import UDPConnection
+from player import Player
+from player_database import PlayerDatabase
+from udp_connection import UDPConnection
 
 
 class LaserTagMain:
@@ -47,7 +46,6 @@ class LaserTagMain:
         main_frame = tk.Frame(self.root, bg="black")
         main_frame.pack()
 
-        # RED TEAM
         red_frame = tk.Frame(main_frame, bg="#330000")
         red_frame.grid(row=0, column=0, padx=40)
 
@@ -55,7 +53,6 @@ class LaserTagMain:
                  fg="white", bg="#550000",
                  font=("Arial", 14)).grid(row=0, column=0, columnspan=3, sticky="ew")
 
-        # GREEN TEAM
         green_frame = tk.Frame(main_frame, bg="#003300")
         green_frame.grid(row=0, column=1, padx=40)
 
@@ -68,7 +65,7 @@ class LaserTagMain:
 
         for i in range(20):
 
-            tk.Label(red_frame, text=i, fg="white", bg="#330000").grid(row=i+1, column=0)
+            tk.Label(red_frame, text=i+1, fg="white", bg="#330000").grid(row=i+1, column=0)
 
             rid = tk.Entry(red_frame, width=10)
             rcode = tk.Entry(red_frame, width=12)
@@ -78,7 +75,7 @@ class LaserTagMain:
 
             self.red_entries.append((rid, rcode))
 
-            tk.Label(green_frame, text=i, fg="white", bg="#003300").grid(row=i+1, column=0)
+            tk.Label(green_frame, text=i+1, fg="white", bg="#003300").grid(row=i+1, column=0)
 
             gid = tk.Entry(green_frame, width=10)
             gcode = tk.Entry(green_frame, width=12)
@@ -88,7 +85,6 @@ class LaserTagMain:
 
             self.green_entries.append((gid, gcode))
 
-        # Buttons
         bottom = tk.Frame(self.root, bg="black")
         bottom.pack(pady=20)
 
@@ -110,7 +106,6 @@ class LaserTagMain:
 
         players = []
 
-        # RED TEAM
         for rid, rcode in self.red_entries:
 
             pid = rid.get()
@@ -118,7 +113,11 @@ class LaserTagMain:
 
             if pid:
 
-                pid = int(pid)
+                try:
+                    pid = int(pid)
+                except ValueError:
+                    messagebox.showerror("Error", "Player ID must be a number")
+                    return []
 
                 if not code:
                     code = self.db.get_codename(pid)
@@ -127,10 +126,9 @@ class LaserTagMain:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
 
-                player = Player(code, 1)
+                player = Player(pid, code, 1)
                 players.append(player)
 
-        # GREEN TEAM
         for gid, gcode in self.green_entries:
 
             pid = gid.get()
@@ -138,7 +136,11 @@ class LaserTagMain:
 
             if pid:
 
-                pid = int(pid)
+                try:
+                    pid = int(pid)
+                except ValueError:
+                    messagebox.showerror("Error", "Player ID must be a number")
+                    return []
 
                 if not code:
                     code = self.db.get_codename(pid)
@@ -147,7 +149,7 @@ class LaserTagMain:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
 
-                player = Player(code, 2)
+                player = Player(pid, code, 2)
                 players.append(player)
 
         return players
@@ -254,12 +256,16 @@ class LaserTagMain:
 
     def show_splash_screen(self, image_path):
 
-        splash = tk.Toplevel()
+        splash = tk.Toplevel(self.root)
         splash.title("Splash")
 
-        image = Image.open(image_path)
-        image = image.resize((800, 600), Image.LANCZOS)
+        try:
+            image = Image.open(image_path)
+        except Exception:
+            splash.destroy()
+            return
 
+        image = image.resize((800, 600), Image.LANCZOS)
         photo = ImageTk.PhotoImage(image)
 
         label = tk.Label(splash, image=photo)
@@ -279,7 +285,6 @@ class LaserTagMain:
         splash.geometry(f"+{x}+{y}")
 
         splash.after(3000, splash.destroy)
-        splash.mainloop()
 
 
 if __name__ == "__main__":
