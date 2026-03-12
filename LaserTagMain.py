@@ -126,7 +126,7 @@ class LaserTagMain:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
 
-                player = Player(pid, code, 1)
+                player = Player(code, 1)
                 players.append(player)
 
         for gid, gcode in self.green_entries:
@@ -149,7 +149,7 @@ class LaserTagMain:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
 
-                player = Player(pid, code, 2)
+                player = Player(code, 2)
                 players.append(player)
 
         return players
@@ -173,7 +173,7 @@ class LaserTagMain:
 
         for p in players:
             try:
-                self.udp_connection.send_to(p.get_player_id())
+                self.udp_connection.send_to(p.get_player_num())
                 response = self.udp_connection.recv_from()
                 print("Equipment code:", response)
             except Exception as e:
@@ -198,7 +198,7 @@ class LaserTagMain:
         tk.Label(red_frame, text="0", fg="red", bg="black", font=("Arial", 20)).pack()
 
         for p in red_team:
-            tk.Label(red_frame, text=p.codename, fg="white", bg="black").pack()
+            tk.Label(red_frame, text=p.get_player_name(), fg="white", bg="black").pack()
 
         green_frame = tk.Frame(score_frame, bg="black")
         green_frame.pack(side="right", padx=80)
@@ -207,7 +207,7 @@ class LaserTagMain:
         tk.Label(green_frame, text="0", fg="lime", bg="black", font=("Arial", 20)).pack()
 
         for p in green_team:
-            tk.Label(green_frame, text=p.codename, fg="white", bg="black").pack()
+            tk.Label(green_frame, text=p.get_player_name(), fg="white", bg="black").pack()
 
         action_frame = tk.Frame(game_window, bg="black")
         action_frame.pack(pady=20)
