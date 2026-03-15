@@ -190,7 +190,7 @@ class LaserTagMain:
             except Exception as e:
                 print("UDP error:", e)
                 
-        self.root.withdraw()
+        # self.root.withdraw()
 
         countdown_timer(
             self.root,
