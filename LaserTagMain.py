@@ -191,12 +191,8 @@ class LaserTagMain:
                 print("UDP error:", e)
                 
         # self.root.withdraw()
-
-        countdown_timer(
-            self.root,
-            30,
-            lambda: self.show_play_action_screen(red_team, green_team)
-        )
+        self.show_play_action_screen(red_team, green_team)
+        
         
 
     def show_play_action_screen(self, red_team, green_team):
