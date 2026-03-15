@@ -48,15 +48,3 @@ class UDPConnection:
             self.target_address = ip_address
         except socket.error:
             print("Invalid IP.")
-
-    # Test main
-# if __name__ == "__main__":
-#     comms = UDPConnection()
-
-#     # Simulate game loop
-#     for i in range(5):
-#         comms.send_to(100 + i)
-
-#         input_value = comms.recv_from()
-#         if input_value is not None:
-#             print("Player equipment code:", input_value)

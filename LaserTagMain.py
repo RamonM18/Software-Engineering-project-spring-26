@@ -25,15 +25,15 @@ class LaserTagMain:
         self.root.configure(bg="black")
         self.root.geometry("1000x700")
 
-        self.buildScreen = False;
-        self.red_team = []
-        self.green_team = []
+        self.buildScreen = False
+        self.buildScreenClosed = False
+        self.gameStarted = False
         self.build_interface()
 
         self.root.bind("<F1>", lambda e: self.edit_game())
         self.root.bind("<F2>", lambda e: self.parameters())
         self.root.bind("<F3>", lambda e: self.start_game())
-        self.root.bind("<F5>", lambda e: self.displaySwitch())
+        self.root.bind("<F5>", lambda e: self.display_switch())
         self.root.bind("<F8>", lambda e: self.view_game())
         self.root.bind("<F10>", lambda e: self.sync())
         self.root.bind("<F12>", lambda e: self.clear())
@@ -42,12 +42,15 @@ class LaserTagMain:
 
     def build_interface(self):
 
-        title = tk.Label(self.root, text="Edit Current Game",
+        self.build_frame = tk.Frame(self.root, bg="black")
+        self.build_frame.place(relwidth=1, relheight=1)
+        
+        title = tk.Label(self.build_frame, text="Edit Current Game",
                          fg="cyan", bg="black",
                          font=("Arial", 20))
         title.pack(pady=10)
 
-        main_frame = tk.Frame(self.root, bg="black")
+        main_frame = tk.Frame(self.build_frame, bg="black")
         main_frame.pack()
 
         red_frame = tk.Frame(main_frame, bg="#330000")
@@ -89,14 +92,14 @@ class LaserTagMain:
 
             self.green_entries.append((gid, gcode))
 
-        bottom = tk.Frame(self.root, bg="black")
+        bottom = tk.Frame(self.build_frame, bg="black")
         bottom.pack(pady=20)
 
         buttons = [
             ("F1 Edit Game", self.edit_game),
             ("F2 Game Parameters", self.parameters),
             ("F3 Start Game", self.start_game),
-            ("F5 Switch Display", self.displaySwitch),
+            ("F5 Switch Display", self.display_switch),
             ("F8 View Game", self.view_game),
             ("F10 Flick Sync", self.sync),
             ("F12 Clear Game", self.clear)
@@ -107,6 +110,7 @@ class LaserTagMain:
             b.pack(side="left", padx=5)
 
         self.buildScreen = True
+        self.build_frame.tkraise()
 
     def collect_players(self):
 
@@ -168,34 +172,49 @@ class LaserTagMain:
             messagebox.showerror("Error", "No players entered.")
             return
 
-        # red_team = []
-        # green_team = []
+        if self.buildScreenClosed:
+            messagebox.showerror("Error", "Game already running.")
+            return
+
+        red_team = []
+        green_team = []
 
         for p in players:
             if p.team_code == 1:
-                self.red_team.append(p)
+                red_team.append(p)
             else:
-                self.green_team.append(p)
+                green_team.append(p)
 
         for p in players:
+            hid = self.enter_hid(p.get_player_name())
+            if hid is not None:
+                print(f"Hardware ID for "+p.get_player_name()+": "+hid)
             try:
                 self.udp_connection.send_to(p.get_player_num())
                 response = self.udp_connection.recv_from()
-                # print("Equipment code:", response)
+                #print("Equipment code:", response) --Removed from past sprint
             except Exception as e:
                 print("UDP error:", e)
                 
-        countdown_timer(30)
-        self.show_play_action_screen(self.red_team, self.green_team)
+        #self.root.withdraw()
+        #self.buildScreenClosed = True
+
+        countdown_timer(
+            self.root,
+            30,
+            lambda: self.show_play_action_screen(red_team, green_team)
+        )
+        
+        self.gameStarted = True
 
     def show_play_action_screen(self, red_team, green_team):
 
-        game_window = tk.Toplevel(self.root)
-        game_window.title("Current Game Action")
-        game_window.configure(bg="black")
-        game_window.geometry("900x600")
+        self.game_window = tk.Toplevel(self.root)
+        self.game_window.title("Current Game Action")
+        self.game_window.configure(bg="black")
+        self.game_window.geometry("900x600")
 
-        score_frame = tk.Frame(game_window, bg="black")
+        score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
 
         red_frame = tk.Frame(score_frame, bg="black")
@@ -216,7 +235,7 @@ class LaserTagMain:
         for p in green_team:
             tk.Label(green_frame, text=p.get_player_name(), fg="white", bg="black").pack()
 
-        action_frame = tk.Frame(game_window, bg="black")
+        action_frame = tk.Frame(self.game_window, bg="black")
         action_frame.pack(pady=20)
 
         tk.Label(action_frame, text="Current Game Action",
@@ -229,7 +248,7 @@ class LaserTagMain:
                              fg="white")
         action_log.pack()
 
-        timer_label = tk.Label(game_window,
+        timer_label = tk.Label(self.game_window,
                                text="Time Remaining: 6:00",
                                fg="white",
                                bg="black",
@@ -244,11 +263,19 @@ class LaserTagMain:
     def parameters(self):
         print("Game Parameters")
 
-    def displaySwitch(self):
+    def display_switch(self):
         if (self.buildScreen):
-            self.show_play_action_screen(self.red_team, self.green_team)
+            if self.gameStarted:
+                self.game_window.tkraise()
+                self.buildScreen = False
+            else:
+                messagebox.showerror("Error", "No action display running.")
         else:
-            self.build_interface()
+            if self.buildScreenClosed:
+                self.build_interface()
+            else:
+                self.build_frame.tkraise()
+                self.buildScreen = True
 
     def view_game(self):
         print("View Game")
@@ -265,6 +292,47 @@ class LaserTagMain:
         for gid, gcode in self.green_entries:
             gid.delete(0, tk.END)
             gcode.delete(0, tk.END)
+
+    def enter_hid(self, playerName):
+        result = [None]  
+        dialog = tk.Toplevel()
+        dialog.title("Input")
+        dialog.configure(bg="black")
+        dialog.geometry("300x150")
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the hardware ID for: "+playerName, fg="cyan", bg="black",
+                 font=("Arial", 12)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 12),
+                         justify="center")
+        entry.pack()
+        entry.focus_set()  # Auto-focus the entry box
+    
+        def submit():
+            try:
+                result[0] = int(entry.get())
+                dialog.destroy()
+            except ValueError:
+                messagebox.showerror("Invalid Input", "Please enter a valid integer.", parent=dialog)
+                entry.delete(0, tk.END)
+    
+        def on_enter(event):
+            submit()
+    
+        entry.bind("<Return>", on_enter)  # Allow Enter key to submit
+        tk.Button(dialog, text="OK", width=10, command=submit).pack(pady=10)
+    
+        dialog.wait_window()  # Wait until dialog closes before returning
+        return result[0]
 
     def show_splash_screen(self, image_path):
 
