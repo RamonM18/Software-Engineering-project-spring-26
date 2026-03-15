@@ -206,7 +206,7 @@ class LaserTagMain:
         game_window.configure(bg="black")
         game_window.geometry("900x600")
 
-        game_window.protocol("WM_DELETE_WINDOW", self.root.destroy)
+        game_window.protocol("WM_DELETE_WINDOW", game_window.destroy)
 
         score_frame = tk.Frame(game_window, bg="black")
         score_frame.pack(pady=10)
