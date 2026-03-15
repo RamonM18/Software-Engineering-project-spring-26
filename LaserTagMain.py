@@ -199,6 +199,11 @@ class LaserTagMain:
         game_window.title("Current Game Action")
         game_window.configure(bg="black")
         game_window.geometry("900x600")
+        # Bring back main window when game window closes
+        def on_close():
+            game_window.destroy()
+            self.root.deiconify()  # Show main window again
+        game_window.protocol("WM_DELETE_WINDOW", on_close)
 
         score_frame = tk.Frame(game_window, bg="black")
         score_frame.pack(pady=10)
