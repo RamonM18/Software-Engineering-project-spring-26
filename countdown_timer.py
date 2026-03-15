@@ -1,7 +1,7 @@
 import tkinter as tk
 
 def countdown_timer(parent, seconds = 30, on_complete = None):
-    window = tk.Toplevel()
+    window = tk.Toplevel(parent)
     window.title("Game Countdown")
     window.configure(bg = "black")
     window.geometry("500x250")
