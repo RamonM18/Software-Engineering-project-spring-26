@@ -35,6 +35,7 @@ def countdown_timer(seconds = 30):
             window.after(1000, update, time_left - 1)
         else:
             timer_label.config(text = "GO!")
+            window.after(2000, window.destroy)
 
     update(seconds)
 
