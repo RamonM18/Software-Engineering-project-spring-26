@@ -190,10 +190,9 @@ class LaserTagMain:
             except Exception as e:
                 print("UDP error:", e)
                 
-        # self.root.withdraw()
+        self.root.withdraw()
+        countdown_timer(30)
         self.show_play_action_screen(red_team, green_team)
-        
-        
 
     def show_play_action_screen(self, red_team, green_team):
 
@@ -201,11 +200,6 @@ class LaserTagMain:
         game_window.title("Current Game Action")
         game_window.configure(bg="black")
         game_window.geometry("900x600")
-
-        game_window.protocol(
-            "WM_DELETE_WINDOW",
-            lambda: [game_window.destroy(), self.root.deiconify()]
-        )
 
         score_frame = tk.Frame(game_window, bg="black")
         score_frame.pack(pady=10)
