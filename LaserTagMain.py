@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
+from countdown_timer import countdown_timer
 
 
 class LaserTagMain:
@@ -188,7 +189,8 @@ class LaserTagMain:
                 print("Equipment code:", response)
             except Exception as e:
                 print("UDP error:", e)
-
+                
+        countdown_timer(30)
         self.show_play_action_screen(red_team, green_team)
 
     def show_play_action_screen(self, red_team, green_team):

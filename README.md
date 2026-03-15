@@ -23,6 +23,7 @@ Table with team members' name and username
     - cd ~/Software-Engineering-project-spring-26
 8. Run the install script and it will have directions for you in the terminal on how to compile and run the program
     - bash install.sh
+    - if it asks for a password when running install.sh, enter student as the password.
 
 ### Running the program after first time setup
 1. Navigate to project directory
@@ -31,23 +32,6 @@ Table with team members' name and username
    - git pull origin main
 3. Compile and run
    - python3 LaserTagmain.py
-
-## Sprint 2 Overview
-
-For Sprint 2, our team completed the following:
-
-- Created team Github repository
-- Implemented splash screen
-- Created player entry screen
-- Connected application to PostgreSQL database
-- Added ability to insert and retrieve players from database
-- Set up UDP sockets (7500 broadcast, 7501 receive)
-- Broadcast equipment ID after each player addition
-- Added option to change network address for UDP sockets
-- Made weekly Slack status reports
-- Created Trello task assignments for each team member
-- Each team member made at least one programming commit
-- Included install script for project setup
 
 ## How the Program Works
 
