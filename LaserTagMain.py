@@ -125,6 +125,11 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
+                else:
+                    #saving entered codename to database if it doesn't exit already
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code)
 
                 player = Player(code, 1)
                 players.append(player)
@@ -148,7 +153,12 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
-
+                else:
+                    #saving entered codename to database on green team if it doesn't already exist
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code)
+                        
                 player = Player(code, 2)
                 players.append(player)
 
