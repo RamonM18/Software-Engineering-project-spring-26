@@ -190,6 +190,7 @@ class LaserTagMain:
             except Exception as e:
                 print("UDP error:", e)
                 
+        self.root.withdraw()
         countdown_timer(30)
         self.show_play_action_screen(red_team, green_team)
 
