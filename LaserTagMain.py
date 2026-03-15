@@ -25,12 +25,15 @@ class LaserTagMain:
         self.root.configure(bg="black")
         self.root.geometry("1000x700")
 
+        self.buildScreen = False;
+        self.red_team = []
+        self.green_team = []
         self.build_interface()
 
         self.root.bind("<F1>", lambda e: self.edit_game())
         self.root.bind("<F2>", lambda e: self.parameters())
         self.root.bind("<F3>", lambda e: self.start_game())
-        self.root.bind("<F5>", lambda e: self.preentered())
+        self.root.bind("<F5>", lambda e: self.displaySwitch())
         self.root.bind("<F8>", lambda e: self.view_game())
         self.root.bind("<F10>", lambda e: self.sync())
         self.root.bind("<F12>", lambda e: self.clear())
@@ -93,7 +96,7 @@ class LaserTagMain:
             ("F1 Edit Game", self.edit_game),
             ("F2 Game Parameters", self.parameters),
             ("F3 Start Game", self.start_game),
-            ("F5 PreEntered Games", self.preentered),
+            ("F5 Switch Display", self.displaySwitch),
             ("F8 View Game", self.view_game),
             ("F10 Flick Sync", self.sync),
             ("F12 Clear Game", self.clear)
@@ -102,6 +105,8 @@ class LaserTagMain:
         for text, cmd in buttons:
             b = tk.Button(bottom, text=text, width=16, command=cmd)
             b.pack(side="left", padx=5)
+
+        self.buildScreen = True
 
     def collect_players(self):
 
@@ -163,25 +168,25 @@ class LaserTagMain:
             messagebox.showerror("Error", "No players entered.")
             return
 
-        red_team = []
-        green_team = []
+        # red_team = []
+        # green_team = []
 
         for p in players:
             if p.team_code == 1:
-                red_team.append(p)
+                self.red_team.append(p)
             else:
-                green_team.append(p)
+                self.green_team.append(p)
 
         for p in players:
             try:
                 self.udp_connection.send_to(p.get_player_num())
                 response = self.udp_connection.recv_from()
-                print("Equipment code:", response)
+                # print("Equipment code:", response)
             except Exception as e:
                 print("UDP error:", e)
                 
         countdown_timer(30)
-        self.show_play_action_screen(red_team, green_team)
+        self.show_play_action_screen(self.red_team, self.green_team)
 
     def show_play_action_screen(self, red_team, green_team):
 
@@ -231,14 +236,19 @@ class LaserTagMain:
                                font=("Arial", 16))
         timer_label.pack(pady=10)
 
+        self.buildScreen = False
+
     def edit_game(self):
         print("Edit Game")
 
     def parameters(self):
         print("Game Parameters")
 
-    def preentered(self):
-        print("Preentered Games")
+    def displaySwitch(self):
+        if (self.buildScreen):
+            self.show_play_action_screen(self.red_team, self.green_team)
+        else:
+            self.build_interface()
 
     def view_game(self):
         print("View Game")

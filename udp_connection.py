@@ -11,7 +11,6 @@ class UDPConnection:
             # Create sender socket (port 7500)
             self.sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.sender_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sender_socket.bind(("", 7500))
 
             # Create receiver socket (port 7501)
             self.receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -28,7 +27,7 @@ class UDPConnection:
         try:
             # Pack integer into 4 bytes (big-endian like Java ByteBuffer default)
             data = struct.pack(">i", value)
-            self.sender_socket.sendto(data, (self.target_address, 7501))
+            self.sender_socket.sendto(data, (self.target_address, 7500))
         except Exception as e:
             print("Send error:", e)
 
@@ -51,13 +50,13 @@ class UDPConnection:
             print("Invalid IP.")
 
     # Test main
-if __name__ == "__main__":
-    comms = UDPConnection()
+# if __name__ == "__main__":
+#     comms = UDPConnection()
 
-    # Simulate game loop
-    for i in range(5):
-        comms.send_to(100 + i)
+#     # Simulate game loop
+#     for i in range(5):
+#         comms.send_to(100 + i)
 
-        input_value = comms.recv_from()
-        if input_value is not None:
-            print("Player equipment code:", input_value)
+#         input_value = comms.recv_from()
+#         if input_value is not None:
+#             print("Player equipment code:", input_value)
