@@ -192,7 +192,7 @@ class LaserTagMain:
                 
         self.root.withdraw()
         countdown_timer(30)
-        self.show_play_action_screen(red_team, green_team)
+        self.root.after(32000, lambda: self.show_play_action_screen(red_team, green_team))
 
     def show_play_action_screen(self, red_team, green_team):
 
