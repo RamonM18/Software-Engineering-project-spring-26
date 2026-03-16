@@ -135,11 +135,6 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
-                else:
-                    #saving entered codename to database if it doesn't exit already
-                    existing = self.db.get_codename(pid)
-                    if existing is None:
-                        self.db.add_player(pid,code)
 
                 player = Player(code, 1)
                 players.append(player)
@@ -163,12 +158,7 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
-                else:
-                    #saving entered codename to database on green team if it doesn't already exist
-                    existing = self.db.get_codename(pid)
-                    if existing is None:
-                        self.db.add_player(pid,code)
-                        
+
                 player = Player(code, 2)
                 players.append(player)
 
@@ -198,19 +188,45 @@ class LaserTagMain:
         for p in players:
             hid = self.enter_hid(p.get_player_name())
             if hid is not None:
-                print(f"Hardware ID for "+p.get_player_name()+f": {hid}")
+                print("Hardware ID for "+p.get_player_name()+f": {hid}")
             try:
                 self.udp_connection.send_to(p.get_player_num())
                 response = self.udp_connection.recv_from()
-                #print("Equipment code:", response) --Removed from past sprint
             except Exception as e:
                 print("UDP error:", e)
                 
         self.root.withdraw()
         #self.buildScreenClosed = True
 
-        countdown_timer(30)
-        self.root.after(32000, lambda: self.show_play_action_screen(red_team, green_team))
+        countdown_timer(
+            self.root,
+            30,
+            lambda: self.show_play_action_screen(red_team, green_team)
+        )
+        
+        self.gameStarted = True
+
+    def start_game_f5(self):
+
+        players = self.collect_players()
+
+        if self.buildScreenClosed:
+            messagebox.showerror("Error", "Game already running.")
+            return
+
+        red_team = []
+        green_team = []
+
+        for p in players:
+            if p.team_code == 1:
+                red_team.append(p)
+            else:
+                green_team.append(p)
+                
+        #self.root.withdraw()
+        #self.buildScreenClosed = True
+        self.show_play_action_screen(red_team, green_team)
+        
         self.gameStarted = True
 
     def show_play_action_screen(self, red_team, green_team):
@@ -219,6 +235,7 @@ class LaserTagMain:
         self.game_window.title("Current Game Action")
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
+        self.game_window.bind("<F5>", lambda e: self.display_switch()) #Ensures f5 key still works
 
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
@@ -270,18 +287,16 @@ class LaserTagMain:
         print("Game Parameters")
 
     def display_switch(self):
-        if (self.buildScreen):
-            if self.gameStarted:
-                self.game_window.tkraise()
-                self.buildScreen = False
-            else:
-                messagebox.showerror("Error", "No action display running.")
+        if self.buildScreen:
+            self.root.withdraw()
+            self.start_game_f5()
+            self.buildScreen = False
         else:
-            if self.buildScreenClosed:
-                self.build_interface()
-            else:
-                self.build_frame.tkraise()
-                self.buildScreen = True
+            if hasattr(self, 'game_window') and self.game_window.winfo_exists():
+                self.game_window.withdraw()
+            self.root.deiconify()      
+            self.build_frame.tkraise() 
+            self.buildScreen = True
 
     def view_game(self):
         print("View Game")
