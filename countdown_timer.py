@@ -1,6 +1,6 @@
 import tkinter as tk
 
-def countdown_timer(parent, seconds = 30, on_complete = None):
+def countdown_timer(seconds = 30):
     window = tk.Toplevel()
     window.title("Game Countdown")
     window.configure(bg = "black")
@@ -35,12 +35,12 @@ def countdown_timer(parent, seconds = 30, on_complete = None):
             window.after(1000, update, time_left - 1)
         else:
             timer_label.config(text = "GO!")
-            window.after(1000, finish)
+            window.after(2000, window.destroy)
     
-    def finish():
-        window.destroy()
-        if on_complete:
-            on_complete()
+    # def finish():
+    #     window.destroy()
+    #     if on_complete:
+    #         on_complete()
 
     update(seconds)
 
