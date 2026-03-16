@@ -210,7 +210,7 @@ class LaserTagMain:
         #self.buildScreenClosed = True
 
         countdown_timer(30)
-        self.root.after(32000, lambda: self.after_countdown(red_team, green_team))
+        self.root.after(32000, lambda: self.show_play_action_screen(red_team, green_team))
         self.gameStarted = True
 
     def show_play_action_screen(self, red_team, green_team):
