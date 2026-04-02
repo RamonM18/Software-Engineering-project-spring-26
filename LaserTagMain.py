@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-
+import time
 from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
@@ -19,7 +19,7 @@ class LaserTagMain:
         self.root.withdraw()
 
         self.show_splash_screen("logo.jpg")
-
+        tim.sleep(3)
         self.root.deiconify()
         self.root.title("Edit Current Game")
         self.root.configure(bg="black")
