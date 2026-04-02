@@ -19,7 +19,7 @@ class LaserTagMain:
         self.root.withdraw()
 
         self.show_splash_screen("logo.jpg")
-        tim.sleep(3)
+        time.sleep(3)
         self.root.deiconify()
         self.root.title("Edit Current Game")
         self.root.configure(bg="black")
