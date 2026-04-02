@@ -135,6 +135,11 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
+                else:
+                    #saving entered codename to database if it doesn't exit already
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code)       
 
                 player = Player(code, 1)
                 players.append(player)
@@ -158,6 +163,11 @@ class LaserTagMain:
                     if code is None:
                         code = "Player" + str(pid)
                         self.db.add_player(pid, code)
+                else:
+                    #saving entered codename to database on green team if it doesn't already exist
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code)
 
                 player = Player(code, 2)
                 players.append(player)
@@ -236,6 +246,12 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
         self.game_window.bind("<F5>", lambda e: self.display_switch()) #Ensures f5 key still works
+
+         # Bring back main window when game window closes
+        def on_close():
+            self.game_window.destroy()
+            self.root.deiconify() #Show main window again
+        self.game_window.protocol("WM_DELETE_WINDOW", on_close)
 
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
