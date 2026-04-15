@@ -259,10 +259,10 @@ class LaserTagMain:
 
         #Seeing what team scored on the base
         if base_color == 'green' and player.team_code == 2:
-            print(f"{player.get_player_naem()} cannot score on own base!")
+            print(f"{player.get_player_name()} cannot score on own base!")
             return
         if base_color == 'red' and player.team_code == 1:
-            print(f"{player.get_player_naem()} cannot score on own base!")
+            print(f"{player.get_player_name()} cannot score on own base!")
             return
         
         #giving points
@@ -467,9 +467,9 @@ class LaserTagMain:
     
     def test_base_score(self, equipment_id, base_code):
         if base_code == 43:
-            self.handle_base_score(equipment_id, 'green')
+            self.baseScoring(equipment_id, 'green')
         elif base_code == 53:
-            self.handle_base_score(equipment_id, 'red')
+            self.baseScoring(equipment_id, 'red')
 
     def test_scoring(self):
         if hasattr(self, 'equipmentToPlayer') and self.equipmentToPlayer:
