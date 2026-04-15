@@ -473,16 +473,23 @@ class LaserTagMain:
             self.baseScoring(equipment_id, 'red')
 
     def test_scoring(self):
+        print("DEBug: f9 pressed!")
+        print(f"DEBUG: equipmenttoPlayer = {self.equipmentToPlayer}")
+
         if hasattr(self, 'equipmentToPlayer') and self.equipmentToPlayer:
             # Test with first equipment ID
             first_equipment = list(self.equipmentToPlayer.keys())[0]
             player = self.equipmentToPlayer[first_equipment]
-        
+
+            print(f"debug: Testing with equipment {first_equipment}, player {player.get_player_name()}")
+
             # Score on opposite base
             if player.team_code == 1:  # Red team
                 self.test_base_score(first_equipment, 53)  # Score on red base
             else:  # Green team
                 self.test_base_score(first_equipment, 43)  # Score on green base
+        else:
+            print("DEBUG: No equipment mappping found")
 
 if __name__ == "__main__":
     LaserTagMain()
