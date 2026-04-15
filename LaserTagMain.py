@@ -303,6 +303,7 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
         self.game_window.bind("<F5>", lambda e: self.display_switch()) #Ensures f5 key still works
+        self.game_window.bind("<F9>", lambda e: self.test_scoring())
 
          # Bring back main window when game window closes
         def on_close():
