@@ -205,6 +205,7 @@ class LaserTagMain:
             hid = self.enter_hid(p.get_player_name())
             if hid is not None:
                 print("Hardware ID for "+p.get_player_name()+f": {hid}")
+                self.equipmentToPlayer[hid] = p
             try:
                 self.udp_connection.send_to(p.get_player_num())
                 response = self.udp_connection.recv_from()
