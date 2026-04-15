@@ -486,9 +486,9 @@ class LaserTagMain:
 
             # Score on opposite base
             if player.team_code == 1:  # Red team
-                self.test_base_score(first_equipment, 53)  # Score on red base
+                self.test_base_score(first_equipment, 43)  # Score on red base
             else:  # Green team
-                self.test_base_score(first_equipment, 43)  # Score on green base
+                self.test_base_score(first_equipment, 53)  # Score on green base
         else:
             print("DEBUG: No equipment mappping found")
 
