@@ -204,20 +204,19 @@ class LaserTagMain:
             if hid is not None:
                 print("Hardware ID for "+p.get_player_name()+f": {hid}")
                 self.equipmentToPlayer[hid] = p
-            try:
-                self.udp_connection.send_to(hid)
-            except Exception as e:
-                print("UDP error:", e)
+            # try:
+            #     self.udp_connection.send_to(hid)
+            # except Exception as e:
+            #     print("UDP error:", e)
                 
         self.root.withdraw()
-        #self.buildScreenClosed = True
 
         countdown_timer(
             self.root,
             30,
             lambda: self.show_play_action_screen(red_team, green_team)
         )
-
+        
         self.udp_connection.send_to(202)
         self.gameStarted = True
 
@@ -238,8 +237,6 @@ class LaserTagMain:
             else:
                 green_team.append(p)
                 
-        #self.root.withdraw()
-        #self.buildScreenClosed = True
         self.show_play_action_screen(red_team, green_team)
         
         self.gameStarted = True

@@ -25,7 +25,7 @@ class UDPConnection:
 
     def send_to(self, value):
         try:
-            # Pack integer into 4 bytes (big-endian like Java ByteBuffer default)
+            # Pack integer into 4 bytes 
             data = struct.pack(">i", value)
             self.sender_socket.sendto(data, (self.target_address, 7500))
         except Exception as e:
