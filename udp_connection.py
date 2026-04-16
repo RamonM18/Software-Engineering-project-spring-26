@@ -26,7 +26,7 @@ class UDPConnection:
     def send_to(self, value):
         try:
             # Pack integer into 4 bytes 
-            data = value.encode()
+            data = struct.pack(">i", value)
             self.sender_socket.sendto(data, (self.target_address, 7500))
         except Exception as e:
             print("Send error:", e)
@@ -34,7 +34,7 @@ class UDPConnection:
     def recv_from(self):
         try:
             data, _ = self.receiver_socket.recvfrom(4096)
-            return data.decode(errors='ignore')
+            return struct.unpack(">i", data)[0]
         except socket.timeout:
             # Normal behavior (non-blocking style)
             return None
