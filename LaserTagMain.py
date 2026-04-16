@@ -37,8 +37,6 @@ class LaserTagMain:
         self.root.bind("<F8>", lambda e: self.view_game())
         self.root.bind("<F10>", lambda e: self.sync())
         self.root.bind("<F12>", lambda e: self.clear())
-        
-        self.root.bind("<F9>", lambda e: self.test_scoring())
 
         self.root.mainloop()
 
@@ -319,7 +317,7 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
         self.game_window.bind("<F5>", lambda e: self.display_switch()) #Ensures f5 key still works
-        self.game_window.bind("<F9>", lambda e: self.test_scoring())
+        #self.game_window.bind("<F9>", lambda e: self.test_scoring()) #used this as a manual test for the base icon, can uncomment or delete later -Ramon
 
          # Bring back main window when game window closes
         def on_close():
@@ -483,13 +481,14 @@ class LaserTagMain:
 
         splash.after(3000, splash.destroy)
     
-    def test_base_score(self, equipment_id, base_code):
+    #commented out the manual testing methods that i used. can delete them or uncomment them to test yourself - Ramon 
+    """def test_base_score(self, equipment_id, base_code):
         if base_code == 43:
             self.baseScoring(equipment_id, 'green')
         elif base_code == 53:
-            self.baseScoring(equipment_id, 'red')
+            self.baseScoring(equipment_id, 'red')"""
 
-    def test_scoring(self):
+    """def test_scoring(self):
         print("DEBug: f9 pressed!")
         print(f"DEBUG: equipmenttoPlayer = {self.equipmentToPlayer}")
 
@@ -506,7 +505,7 @@ class LaserTagMain:
             else:  # Green team
                 self.test_base_score(first_equipment, 53)  # Score on green base
         else:
-            print("DEBUG: No equipment mappping found")
+            print("DEBUG: No equipment mappping found")"""
 
 if __name__ == "__main__":
     LaserTagMain()
