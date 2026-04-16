@@ -307,7 +307,7 @@ class LaserTagMain:
             except Exception as e:
                 print("Error loading base icon")
 
-        self.update_team_scores()
+        self.updateTeamScores()
         
     def show_play_action_screen(self, red_team, green_team):
 
