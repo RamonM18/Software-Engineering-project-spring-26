@@ -217,7 +217,8 @@ class LaserTagMain:
             30,
             lambda: self.show_play_action_screen(red_team, green_team)
         )
-        
+
+        self.udp_connection.send_to(202)
         self.gameStarted = True
 
     def start_game_f5(self):
