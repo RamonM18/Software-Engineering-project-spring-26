@@ -275,6 +275,20 @@ class LaserTagMain:
         #calling update player to show icon
         self.update_playerDisplay(player)
     
+    #method to update team scores
+    def updateTeamScores(self):
+        red_total = 0
+        green_total = 0
+
+        for player, label in self.player_labels.items():
+            if player.team_code == 1: #Red
+                red_total += player.get_score()
+            else:
+                green_total += player.get_score()
+
+        self.red_score_label.config(text=str(red_total))
+        self.green_score_label.config(text=str(green_total))
+
     #updating player label to show base icon jpg
     def update_playerDisplay(self, player):
         if player in self.player_labels:
@@ -287,12 +301,13 @@ class LaserTagMain:
                 icon_photo = ImageTk.PhotoImage(icon)
 
                 #updating label to show icon
-                label.config(image=icon_photo, compound = 'left')
+                label.config(text=f"{player.get_player_name()} - {player.get_score()}", image=icon_photo, compound = 'left')
                 label.image = icon_photo
 
             except Exception as e:
                 print("Error loading base icon")
 
+        self.update_team_scores()
         
     def show_play_action_screen(self, red_team, green_team):
 
@@ -319,10 +334,10 @@ class LaserTagMain:
         red_frame.pack(side="left", padx=80)
 
         tk.Label(red_frame, text="RED TEAM", fg="red", bg="black", font=("Arial", 16)).pack()
-        tk.Label(red_frame, text="0", fg="red", bg="black", font=("Arial", 20)).pack()
-
+        self.red_score_label = tk.Label(red_frame, text="0", fg="red", bg="black", font=("Arial", 20))
+        self.red_score_label.pack()
         for p in red_team:
-            player_label = tk.Label(red_frame, text=p.get_player_name(), fg="white", bg="black")
+            player_label = tk.Label(red_frame, text=f"{p.get_player_name()} - {p.get_score()}", fg="white", bg="black")
             player_label.pack()
             self.player_labels[p] = player_label
 
@@ -331,10 +346,11 @@ class LaserTagMain:
         green_frame.pack(side="right", padx=80)
 
         tk.Label(green_frame, text="GREEN TEAM", fg="lime", bg="black", font=("Arial", 16)).pack()
-        tk.Label(green_frame, text="0", fg="lime", bg="black", font=("Arial", 20)).pack()
+        self.green_score_label = tk.Label(green_frame, text="0", fg="lime", bg="black", font=("Arial", 20))
+        self.green_score_label.pack()
 
         for p in green_team:
-            player_label = tk.Label(green_frame, text=p.get_player_name(), fg="white", bg="black")
+            player_label = tk.Label(green_frame, text=f"{p.get_player_name()} - {p.get_score()}", fg="white", bg="black")
             player_label.pack()
             self.player_labels[p] = player_label
 
