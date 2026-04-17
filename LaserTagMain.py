@@ -525,13 +525,13 @@ class LaserTagMain:
         #self.codes = {}
         counter = 0
         while stopVar:
-            time.sleep(5) #sleep 3 seconds between call and response for testing and readability
+            time.sleep(3) #sleep 3 seconds between call and response for testing and readability
             code = (self.udp_connection.recv_from())
             try:
                 #self.codes = code.split(":")
-                self.int_code1 = int(code[0:1])
-                self.int_code2 = int(code[2:4])
-                print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
+                #self.int_code1 = int(code[0:1])
+                #self.int_code2 = int(code[2:4])
+                print("Player " + code[0:1] + " hit player " + code[2:4] +"!") 
                 self.udp_connection.send_to("404")
                 if counter == 6:
                     stopVar = True
