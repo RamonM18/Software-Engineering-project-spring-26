@@ -6,7 +6,7 @@ from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
 from countdown_timer import countdown_timer
-
+import ipaddress
 
 class LaserTagMain:
 
@@ -31,7 +31,7 @@ class LaserTagMain:
         self.build_interface()
 
         self.root.bind("<F1>", lambda e: self.edit_game())
-        self.root.bind("<F2>", lambda e: self.parameters())
+        self.root.bind("<F2>", lambda e: self.edit_ip_address())
         self.root.bind("<F3>", lambda e: self.start_game())
         self.root.bind("<F5>", lambda e: self.display_switch())
         self.root.bind("<F8>", lambda e: self.view_game())
@@ -96,12 +96,12 @@ class LaserTagMain:
         bottom.pack(pady=20)
 
         buttons = [
-            ("F1 Edit Game", self.edit_game),
-            ("F2 Game Parameters", self.parameters),
+            #("F1 Edit Game", self.edit_game),
+            ("F2 Change IP address", self.edit_ip_address),
             ("F3 Start Game", self.start_game),
             ("F5 Switch Display", self.display_switch),
-            ("F8 View Game", self.view_game),
-            ("F10 Flick Sync", self.sync),
+            #("F8 View Game", self.view_game),
+            #("F10 Flick Sync", self.sync),
             ("F12 Clear Game", self.clear)
         ]
 
@@ -374,8 +374,52 @@ class LaserTagMain:
     def edit_game(self):
         print("Edit Game")
 
-    def parameters(self):
-        print("Game Parameters")
+    def edit_ip_address(self):
+        result = [None]  
+        dialog = tk.Toplevel()
+        dialog.title("Input")
+        dialog.configure(bg="black")
+        dialog.geometry("300x150")
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the new IP address: ", fg="cyan", bg="black",
+                 font=("Arial", 15)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
+                         justify="center")
+        entry.pack()
+        entry.focus_set()  # Auto-focus the entry box
+    
+        def submit():
+            user_input = entry.get().strip() # Get input and remove whitespace
+            try:
+                # This will validate if the string is a proper IPv4 or IPv6 address
+                ipaddress.ip_address(user_input)
+                
+                # If valid, store the string in result[0] and close the dialog
+                result[0] = user_input
+                dialog.destroy()
+            except ValueError:
+                # If the input isn't a valid IP, show an error and clear the entry box
+                messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
+                entry.delete(0, tk.END)
+    
+        def on_enter(event):
+            submit()
+    
+        entry.bind("<Return>", on_enter)  # Allow Enter key to submit
+        tk.Button(dialog, text="OK", width=10, command=submit).pack(pady=10)
+    
+        dialog.wait_window()  # Wait until dialog closes before returning
+        self.udp_connection.set_network_address(result[0])
 
     def display_switch(self):
         if self.buildScreen:
@@ -422,9 +466,9 @@ class LaserTagMain:
         dialog.geometry(f"+{x}+{y}")
     
         tk.Label(dialog, text="Enter the hardware ID for: "+playerName, fg="cyan", bg="black",
-                 font=("Arial", 12)).pack(pady=15)
+                 font=("Arial", 15)).pack(pady=15)
     
-        entry = tk.Entry(dialog, width=20, font=("Arial", 12),
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
                          justify="center")
         entry.pack()
         entry.focus_set()  # Auto-focus the entry box
