@@ -203,7 +203,7 @@ class LaserTagMain:
             hid = self.enter_hid(p.get_player_name())
             if hid is not None:
                 print("Hardware ID for "+p.get_player_name()+f": {hid}")
-                self.udp_connection.send_to(str(hid))
+                self.udp_connection.send_to(str(hid)) #I'm not totally sure about putting this here, doesn't really serve any purpose but is in the project description
                 self.equipmentToPlayer[hid] = p
                 
         self.root.withdraw()
@@ -229,7 +229,7 @@ class LaserTagMain:
             except ValueError:
                 print("Error in parsing int from received code")
 
-            print("Player " + self.int_code1 + " hit player " + self.int_code2 +"!") 
+            print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
             self.udp_connection.send_to("404")
             if counter == 11:
                 stopVar = True
