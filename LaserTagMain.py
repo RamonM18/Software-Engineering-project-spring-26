@@ -368,6 +368,10 @@ class LaserTagMain:
                                bg="black",
                                font=("Arial", 16))
         timer_label.pack(pady=10)
+        stopVar = True
+        while stopVar:
+            time.sleep(3) #sleep 3 seconds between call and response
+            print(self.udp_connection.recv_from())
 
         self.buildScreen = False
 
