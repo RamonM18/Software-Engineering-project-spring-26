@@ -369,10 +369,19 @@ class LaserTagMain:
                                font=("Arial", 16))
         timer_label.pack(pady=10)
         stopVar = True
+        self.code1 = ""
+        self.code2 = ""
+        counter = 0
         while stopVar:
             time.sleep(3) #sleep 3 seconds between call and response
             code = (self.udp_connection.recv_from())
+            self.code1 = code[0:1]
+            self.code2 = code[3:4]
+            print("Player " + self.code1 + " hit player " + self.code2 +"!")
             self.udp_connection.send_to("404")
+            if counter == 11:
+                stopVar = True
+                self.udp_connection.send_to("221")
 
         self.buildScreen = False
 
