@@ -527,18 +527,17 @@ class LaserTagMain:
         while stopVar:
             time.sleep(3) #sleep 3 seconds between call and response for testing and readability
             code = (self.udp_connection.recv_from())
-            self.codes = code.split(":")
             try:
+                self.codes = code.split(":")
                 self.int_code1 = int(self.codes[0])
                 self.int_code2 = int(self.codes[1])
+                print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
+                self.udp_connection.send_to("404")
+                if counter == 6:
+                    stopVar = True
+                    self.udp_connection.send_to("221")
             except ValueError:
                 print("Error in parsing int from received code")
-
-            print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
-            self.udp_connection.send_to("404")
-            if counter == 6:
-                stopVar = True
-                self.udp_connection.send_to("221")
 
             counter += 1
 
