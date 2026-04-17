@@ -25,16 +25,16 @@ class UDPConnection:
 
     def send_to(self, value):
         try:
-            # Pack integer into 4 bytes (big-endian like Java ByteBuffer default)
-            data = struct.pack(">i", value)
+            # Pack integer into 4 bytes 
+            data = str(value).encode('utf-8')
             self.sender_socket.sendto(data, (self.target_address, 7500))
         except Exception as e:
             print("Send error:", e)
 
     def recv_from(self):
         try:
-            data, _ = self.receiver_socket.recvfrom(4)
-            return struct.unpack(">i", data)[0]
+            data, _ = self.receiver_socket.recvfrom(4096)
+            return data.decode('utf-8')
         except socket.timeout:
             # Normal behavior (non-blocking style)
             return None
