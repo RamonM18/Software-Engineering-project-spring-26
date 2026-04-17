@@ -371,7 +371,8 @@ class LaserTagMain:
         stopVar = True
         while stopVar:
             time.sleep(3) #sleep 3 seconds between call and response
-            print(self.udp_connection.recv_from())
+            code = (self.udp_connection.recv_from())
+            self.udp_connection.send_to("404")
 
         self.buildScreen = False
 
