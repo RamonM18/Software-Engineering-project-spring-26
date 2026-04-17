@@ -216,24 +216,6 @@ class LaserTagMain:
         
         self.udp_connection.send_to("202")
         self.gameStarted = True
-        stopVar = True
-        self.codes = {}
-        counter = 0
-        while stopVar:
-            time.sleep(3) #sleep 3 seconds between call and response for testing and readability
-            code = (self.udp_connection.recv_from())
-            self.codes = code.split(":")
-            try:
-                self.int_code1 = int(self.codes[0])
-                self.int_code2 = int(self.codes[0])
-            except ValueError:
-                print("Error in parsing int from received code")
-
-            print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
-            self.udp_connection.send_to("404")
-            if counter == 11:
-                stopVar = True
-                self.udp_connection.send_to("221")
 
     def start_game_f5(self):
 
@@ -385,6 +367,24 @@ class LaserTagMain:
         timer_label.pack(pady=10)
 
         self.buildScreen = False
+        stopVar = True
+        self.codes = {}
+        counter = 0
+        while stopVar:
+            time.sleep(3) #sleep 3 seconds between call and response for testing and readability
+            code = (self.udp_connection.recv_from())
+            self.codes = code.split(":")
+            try:
+                self.int_code1 = int(self.codes[0])
+                self.int_code2 = int(self.codes[1])
+            except ValueError:
+                print("Error in parsing int from received code")
+
+            print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
+            self.udp_connection.send_to("404")
+            if counter == 11:
+                stopVar = True
+                self.udp_connection.send_to("221")
 
     def edit_game(self):
         print("Edit Game")
