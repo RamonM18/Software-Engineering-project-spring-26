@@ -525,7 +525,7 @@ class LaserTagMain:
         #self.codes = {}
         counter = 0
         while stopVar:
-            time.sleep(3) #sleep 3 seconds between call and response for testing and readability
+            time.sleep(5) #sleep 3 seconds between call and response for testing and readability
             code = (self.udp_connection.recv_from())
             try:
                 #self.codes = code.split(":")
