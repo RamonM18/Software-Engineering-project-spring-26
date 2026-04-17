@@ -541,10 +541,13 @@ class LaserTagMain:
                     player1 = self.equipmentToPlayer[self.int_code1]
                     player2 = self.equipmentToPlayer[self.int_code2]
                     print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                    player1.add_score(-10)
+                    player2.add_score(-10)
                 else:
                     player1 = self.equipmentToPlayer[self.int_code1]
                     player2 = self.equipmentToPlayer[self.int_code2]
                     print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                    player1.add_score(10)
                 if counter == 14:
                     stopVar = False
                     self.udp_connection.send_to("221")
