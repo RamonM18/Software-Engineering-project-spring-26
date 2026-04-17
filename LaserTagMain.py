@@ -530,8 +530,7 @@ class LaserTagMain:
             try:
                 #self.codes = code.split(":")
                 self.int_code1 = int(code[0:1])
-                self.int_code2 = int(code[2:4])
-                print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
+                self.int_code2 = int(code[2:4]) 
                 self.udp_connection.send_to("404")
                 if self.int_code2 == 43:
                     self.baseScoring(self.int_code1, 'green')
@@ -539,6 +538,13 @@ class LaserTagMain:
                     self.baseScoring(self.int_code1, 'red')
                 elif self.int_code1 % 2 == self.int_code2 % 2: # They are on the same team
                     self.udp_connection.send_to("504")
+                    player1 = self.equipmentToPlayer[self.int_code1]
+                    player2 = self.equipmentToPlayer[self.int_code2]
+                    print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                else:
+                    player1 = self.equipmentToPlayer[self.int_code1]
+                    player2 = self.equipmentToPlayer[self.int_code2]
+                    print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
                 if counter == 14:
                     stopVar = False
                     self.udp_connection.send_to("221")
