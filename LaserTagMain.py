@@ -224,8 +224,8 @@ class LaserTagMain:
             code = (self.udp_connection.recv_from())
             self.codes = code.split(":")
             try:
-                self.int_code1 = int(self.codes[0].get())
-                self.int_code2 = int(self.codes[0].get())
+                self.int_code1 = int(self.codes[0])
+                self.int_code2 = int(self.codes[0])
             except ValueError:
                 print("Error in parsing int from received code")
 
