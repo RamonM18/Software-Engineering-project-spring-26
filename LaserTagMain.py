@@ -535,7 +535,7 @@ class LaserTagMain:
                 self.udp_connection.send_to("404")
                 if self.int_code1 % 2 == self.int_code2 % 2: # They are on the same team
                     self.udp_connection.send_to("504")
-                if counter == 11:
+                if counter == 14:
                     stopVar = False
                     self.udp_connection.send_to("221")
             except ValueError:
