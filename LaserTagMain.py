@@ -529,10 +529,12 @@ class LaserTagMain:
             code = (self.udp_connection.recv_from())
             try:
                 #self.codes = code.split(":")
-                #self.int_code1 = int(code[0:1])
-                #self.int_code2 = int(code[2:4])
-                print("Player " + code[0:1] + " hit player " + code[2:4] +"!") 
+                self.int_code1 = int(code[0:1])
+                self.int_code2 = int(code[2:4])
+                print("Player " + str(self.int_code1) + " hit player " + str(self.int_code2) +"!") 
                 self.udp_connection.send_to("404")
+                if self.int_code1 % 2 == 1 & self.int_code2 % 2 ==1 | self.int_code1 % 2 == 0 & self.int_code2 % 2 == 0:
+                    self.udp_connection.send_to("504")
                 if counter == 6:
                     stopVar = True
                     self.udp_connection.send_to("221")
