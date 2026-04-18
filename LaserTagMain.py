@@ -218,9 +218,15 @@ class LaserTagMain:
 
                 if not code:
                     code = self.db.get_codename(pid)
+
                     if code is None:
-                        code = f"Player{pid}"
+                        code = "Player" + str(pid)
                         self.db.add_player(pid, code)
+                else:
+                    #saving entered codename to database if it doesn't exit already
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code) 
 
                 players.append(Player(code, 1))
 
@@ -240,9 +246,15 @@ class LaserTagMain:
 
                 if not code:
                     code = self.db.get_codename(pid)
+
                     if code is None:
-                        code = f"Player{pid}"
+                        code = "Player" + str(pid)
                         self.db.add_player(pid, code)
+                else:
+                    #saving entered codename to database if it doesn't exit already
+                    existing = self.db.get_codename(pid)
+                    if existing is None:
+                        self.db.add_player(pid,code) 
 
                 players.append(Player(code, 2))
 
