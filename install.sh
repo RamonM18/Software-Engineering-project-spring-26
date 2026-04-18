@@ -19,7 +19,7 @@ sudo apt-get install -y python3-tk
 # Install PIL
 echo "Installing Pillow (PIL) for image support"
 pip3 install pillow
-
+pip3 install pygame
 echo ""
 echo "Installation complete!"
 echo ""
