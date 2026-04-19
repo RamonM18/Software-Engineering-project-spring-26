@@ -497,6 +497,37 @@ class LaserTagMain:
             lbl.pack()
             self.player_labels[p] = lbl
 
+        #readding box and static timer
+        action_frame = tk.Frame(self.game_window, bg ="black")
+        action_frame.pack(pady=20)
+
+        tk.Label(
+            action_frame, 
+            text="Current Game Action", 
+            fg="white", 
+            bg="black", 
+            font=("Arial", 14)
+        ).pack()
+
+        self.action_log = tk.Text(
+            action_frame, 
+            width=70, 
+            height=15, 
+            bg="navy", 
+            fg="white"
+        )
+        self.action_log.pack()
+
+        # TIMER
+        self.timer_label = tk.Label(
+            self.game_window, 
+            text="Time Remaining: 6:00", 
+            fg="white", 
+            bg="black", 
+            font=("Arial", 16)
+        )
+        self.timer_label.pack(pady=10)
+
         self.buildScreen = False
 
         self.start_scoreFlashing()
