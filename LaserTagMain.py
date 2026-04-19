@@ -463,6 +463,7 @@ class LaserTagMain:
             self.player_labels[p] = lbl
 
         self.buildScreen = False
+        self.test_friendly_fire()
         self.poll_udp()
 
     # ======================================================
@@ -580,7 +581,6 @@ class LaserTagMain:
         splash.after(3000, splash.destroy)
     
     # Friendly fire helper methods
-
     def process_hit_message(self, message):
         try:
             if ":" not in message:
@@ -632,6 +632,11 @@ class LaserTagMain:
 
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             self.game_window.after(50, self.poll_udp)
+    
+    def test_friendly_fire(self):
+        ids = list(self.equipmentToPlayer.keys())
+        if len(ids) >= 2:
+            self.process_hit_message(f"{ids[0]}:{ids[1]}")
 
 
 # ==========================================================
