@@ -178,7 +178,7 @@ class LaserTagMain:
 
         buttons = [
             ("F1 Edit Game", self.edit_game),
-            ("F2 Parameters", self.parameters),
+            ("F2 Edit IP Address", self.edit_ip_address),
             ("F3 Start Game", self.start_game),
             ("F5 Switch Display", self.display_switch),
             ("F8 View Game", self.view_game),
