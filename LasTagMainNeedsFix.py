@@ -424,123 +424,123 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
 
-    def on_close():
-        self.flash_state = False
-        self.game_window.destroy()
-        self.root.deiconify()
+        def on_close():
+            self.flash_state = False
+            self.game_window.destroy()
+            self.root.deiconify()
 
-        self.game_window.protocol("WM_DELETE_WINDOW", on_close)
+            self.game_window.protocol("WM_DELETE_WINDOW", on_close)
 
-        score_frame = tk.Frame(self.game_window, bg="black")
-        score_frame.pack(pady=10)
+            score_frame = tk.Frame(self.game_window, bg="black")
+            score_frame.pack(pady=10)
 
-        red_frame = tk.Frame(score_frame, bg="black")
-        red_frame.pack(side="left", padx=80)
+            red_frame = tk.Frame(score_frame, bg="black")
+            red_frame.pack(side="left", padx=80)
 
-        tk.Label(
-            red_frame,
-            text="RED TEAM",
-            fg="red",
-            bg="black",
-            font=("Arial", 16)
-        ).pack()
-
-        self.red_score_label = tk.Label(
-            red_frame,
-            text="0",
-            fg="red",
-            bg="black",
-            font=("Arial", 20)
-        )
-        self.red_score_label.pack()
-
-        for p in red_team:
-            lbl = tk.Label(
+            tk.Label(
                 red_frame,
-                text=f"{p.get_player_name()} - {p.get_score()}",
-                fg="white",
-                bg="black"
+                text="RED TEAM",
+                fg="red",
+                bg="black",
+                font=("Arial", 16)
+            ).pack()
+
+            self.red_score_label = tk.Label(
+                red_frame,
+                text="0",
+                fg="red",
+                bg="black",
+                font=("Arial", 20)
             )
-            lbl.pack()
-            self.player_labels[p] = lbl
+            self.red_score_label.pack()
 
-        green_frame = tk.Frame(score_frame, bg="black")
-        green_frame.pack(side="right", padx=80)
+            for p in red_team:
+                lbl = tk.Label(
+                    red_frame,
+                    text=f"{p.get_player_name()} - {p.get_score()}",
+                    fg="white",
+                    bg="black"
+                )
+                lbl.pack()
+                self.player_labels[p] = lbl
 
-        tk.Label(
-            green_frame,
-            text="GREEN TEAM",
-            fg="lime",
-            bg="black",
-            font=("Arial", 16)
-        ).pack()
+            green_frame = tk.Frame(score_frame, bg="black")
+            green_frame.pack(side="right", padx=80)
 
-        self.green_score_label = tk.Label(
-            green_frame,
-            text="0",
-            fg="lime",
-            bg="black",
-            font=("Arial", 20)
-        )
-        self.green_score_label.pack()
-
-        for p in green_team:
-            lbl = tk.Label(
+            tk.Label(
                 green_frame,
-                text=f"{p.get_player_name()} - {p.get_score()}",
-                fg="white",
-                bg="black"
+                text="GREEN TEAM",
+                fg="lime",
+                bg="black",
+                font=("Arial", 16)
+            ).pack()
+
+            self.green_score_label = tk.Label(
+                green_frame,
+                text="0",
+                fg="lime",
+                bg="black",
+                font=("Arial", 20)
             )
-            lbl.pack()
-            self.player_labels[p] = lbl
+            self.green_score_label.pack()
 
-        # ======================================================
-        # ACTION LOG
-        # ======================================================
-        action_frame = tk.Frame(self.game_window, bg="black")
-        action_frame.pack(pady=20)
+            for p in green_team:
+                lbl = tk.Label(
+                    green_frame,
+                    text=f"{p.get_player_name()} - {p.get_score()}",
+                    fg="white",
+                    bg="black"
+                )
+                lbl.pack()
+                self.player_labels[p] = lbl
 
-        tk.Label(
-            action_frame,
-            text="Current Game Action",
-            fg="white",
-            bg="black",
-            font=("Arial", 14)
-        ).pack()
+            # ======================================================
+            # ACTION LOG
+            # ======================================================
+            action_frame = tk.Frame(self.game_window, bg="black")
+            action_frame.pack(pady=20)
 
-        self.action_log = tk.Text(
-            action_frame,
-            width=70,
-            height=15,
-            bg="navy",
-            fg="white"
-        )
-        self.action_log.pack()
+            tk.Label(
+                action_frame,
+                text="Current Game Action",
+                fg="white",
+                bg="black",
+                font=("Arial", 14)
+            ).pack()
 
-        # ======================================================
-        # TIMER SETUP
-        # ======================================================
-        self.timer_label = tk.Label(
-            self.game_window,
-            text="Time Remaining: 6:00",
-            fg="white",
-            bg="black",
-            font=("Arial", 16)
-        )
-        self.timer_label.pack(pady=10)
+            self.action_log = tk.Text(
+                action_frame,
+                width=70,
+                height=15,
+                bg="navy",
+                fg="white"
+            )
+            self.action_log.pack()
 
-        self.time_remaining = 360
-        self.timer_running = True
-        self.timer_paused = False
+            # ======================================================
+            # TIMER SETUP
+            # ======================================================
+            self.timer_label = tk.Label(
+                self.game_window,
+                text="Time Remaining: 6:00",
+                fg="white",
+                bg="black",
+                font=("Arial", 16)
+            )
+            self.timer_label.pack(pady=10)
 
-        # ======================================================
-        # START LOOPS SAFELY
-        # ======================================================
-        self.buildScreen = False
+            self.time_remaining = 360
+            self.timer_running = True
+            self.timer_paused = False
 
-        self.game_window.after(100, self.update_timer)
-        self.game_window.after(100, self.poll_udp)
-        self.game_window.after(100, self.start_scoreFlashing)
+            # ======================================================
+            # START LOOPS SAFELY
+            # ======================================================
+            self.buildScreen = False
+
+            self.game_window.after(100, self.update_timer)
+            self.game_window.after(100, self.poll_udp)
+            self.game_window.after(100, self.start_scoreFlashing)
         # ======================================================
         # MISC
         # ======================================================
@@ -651,28 +651,31 @@ class LaserTagMain:
         entry.pack()
         entry.focus_set()
 
-    def submit():
-        try:
-            result[0] = int(entry.get())
-            dialog.destroy()
-        except ValueError:
-            messagebox.showerror(
-            "Invalid",
-            "Enter a valid number",
-            parent=dialog
-            )
+    # ---------------- submit function ----------------
+        def submit():
+            try:
+                result[0] = int(entry.get())
+                dialog.destroy()
 
-            entry.bind("<Return>", lambda e: submit())
+            except ValueError:
+                messagebox.showerror(
+                    "Invalid",
+                    "Enter a valid number",
+                    parent=dialog
+                )
 
-            tk.Button(
-                dialog,
-                text="OK",
-                command=submit
-            ).pack(pady=10)
+        # ---------------- bindings (OUTSIDE except) ----------------
+        entry.bind("<Return>", lambda e: submit())
 
-            dialog.wait_window()
+        tk.Button(
+            dialog,
+            text="OK",
+            command=submit
+        ).pack(pady=10)
 
-            return result[0]
+        dialog.wait_window()
+
+        return result[0]
 
     # ======================================================
     # SPLASH
