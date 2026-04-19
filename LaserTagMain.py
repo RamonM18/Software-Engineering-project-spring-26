@@ -463,7 +463,6 @@ class LaserTagMain:
             self.player_labels[p] = lbl
 
         self.buildScreen = False
-        self.test_friendly_fire()
         self.poll_udp()
 
     # ======================================================
@@ -605,7 +604,8 @@ class LaserTagMain:
 
         except Exception as e:
             print("Hit processing error:", e)
-    
+
+    # Friendly fire helper method
     def refresh_player_scores(self):
         for player, label in self.player_labels.items():
             current_image = getattr(label, "image", "")
@@ -619,7 +619,8 @@ class LaserTagMain:
                 label.config(text=f"{player.get_player_name()} - {player.get_score()}")
 
         self.updateTeamScores()
-    
+
+    # Friendly fire helper method
     def poll_udp(self):
         try:
             data = self.udp_connection.recv_from()
@@ -633,11 +634,6 @@ class LaserTagMain:
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             self.game_window.after(50, self.poll_udp)
     
-    def test_friendly_fire(self):
-        ids = list(self.equipmentToPlayer.keys())
-        if len(ids) >= 2:
-            self.process_hit_message(f"{ids[0]}:{ids[1]}")
-
 
 # ==========================================================
 # RUN
