@@ -608,7 +608,50 @@ class LaserTagMain:
                 messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
                 entry.delete(0, tk.END)
         return result[0]
+    
+    def enter_hid(self, playerName):
 
+        result = [None]
+
+        dialog = tk.Toplevel()
+        dialog.title("Input")
+        dialog.configure(bg="black")
+        dialog.geometry("300x150")
+        dialog.grab_set()
+
+        tk.Label(
+            dialog,
+            text="Enter hardware ID for: " + playerName,
+            fg="cyan",
+            bg="black"
+        ).pack(pady=15)
+
+        entry = tk.Entry(dialog, width=20)
+        entry.pack()
+        entry.focus_set()
+
+        def submit():
+            try:
+                result[0] = int(entry.get())
+                dialog.destroy()
+            except ValueError:
+                messagebox.showerror(
+                    "Invalid",
+                    "Enter a valid number",
+                    parent=dialog
+                )
+
+        entry.bind("<Return>", lambda e: submit())
+
+        tk.Button(
+            dialog,
+            text="OK",
+            command=submit
+        ).pack(pady=10)
+
+        dialog.wait_window()
+
+        return result[0]
     # ======================================================
     # SPLASH
     # ======================================================
