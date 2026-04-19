@@ -10,6 +10,7 @@ from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
 from countdown_timer import countdown_timer
+from friendly_fire import handle_hit
 
 
 # ==========================================================
@@ -462,6 +463,7 @@ class LaserTagMain:
             self.player_labels[p] = lbl
 
         self.buildScreen = False
+        self.poll_udp()
 
     # ======================================================
     # MISC
@@ -576,6 +578,60 @@ class LaserTagMain:
         self.audio.play_music("intro.mp3")
 
         splash.after(3000, splash.destroy)
+    
+    # Friendly fire helper methods
+
+    def process_hit_message(self, message):
+        try:
+            if ":" not in message:
+                return
+
+            shooter_id_str, target_id_str = message.split(":")
+            shooter_id = int(shooter_id_str)
+            target_id = int(target_id_str)
+
+            shooter = self.equipmentToPlayer.get(shooter_id)
+            target = self.equipmentToPlayer.get(target_id)
+
+            result = handle_hit(shooter, target)
+            self.refresh_player_scores()
+
+            if shooter is not None and target is not None and shooter.team_code == target.team_code:
+                self.udp_connection.send_to(shooter_id)
+                self.udp_connection.send_to(target_id)
+            else:
+                if target is not None:
+                    self.udp_connection.send_to(target_id)
+
+        except Exception as e:
+            print("Hit processing error:", e)
+    
+    def refresh_player_scores(self):
+        for player, label in self.player_labels.items():
+            current_image = getattr(label, "image", "")
+            if current_image:
+                label.config(
+                    text=f"{player.get_player_name()} - {player.get_score()}",
+                    image=current_image,
+                    compound="left"
+                )
+            else:
+                label.config(text=f"{player.get_player_name()} - {player.get_score()}")
+
+        self.updateTeamScores()
+    
+    def poll_udp(self):
+        try:
+            data = self.udp_connection.recv_from()
+
+            if data is not None:
+                self.process_hit_message(data)
+
+        except Exception as e:
+            print("UDP poll error:", e)
+
+        if hasattr(self, 'game_window') and self.game_window.winfo_exists():
+            self.game_window.after(50, self.poll_udp)
 
 
 # ==========================================================
