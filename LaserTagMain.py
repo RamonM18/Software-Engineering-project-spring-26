@@ -94,6 +94,8 @@ class LaserTagMain:
         self.root.bind("<F10>", lambda e: self.sync())
         self.root.bind("<F12>", lambda e: self.clear())
 
+        self.root.bind("<F9>", lambda e: self.test_add_points())
+
     # ======================================================
     # UI BUILD
     # ======================================================
@@ -607,6 +609,13 @@ class LaserTagMain:
         self.audio.play_music("intro.mp3")
 
         splash.after(3000, splash.destroy)
+
+    def test_add_points(self):
+        if self.player_labels:
+            first_player = list(self.player_labels.keys())[0]
+            first_player.add_score(100)
+            self.update_playerDisplay(first_player)
+        print(f"Added 100 points to {first_player.get_player_name()}")
 
 
 # ==========================================================
