@@ -387,6 +387,9 @@ class LaserTagMain:
         self.flash_timer()
 
     def flash_timer(self):
+        if self.flash_state is None:
+            return 
+        
         red_total = 0
         green_total = 0
 
@@ -424,6 +427,7 @@ class LaserTagMain:
         self.game_window.geometry("900x600")
 
         def on_close():
+            self.flash_state = None
             self.game_window.destroy()
             self.root.deiconify()
 
