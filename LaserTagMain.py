@@ -428,6 +428,7 @@ class LaserTagMain:
             self.root.deiconify()
 
         self.game_window.protocol("WM_DELETE_WINDOW", on_close)
+        self.game_window.bind("<F9", lambda e: self.test_add_points())
 
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
