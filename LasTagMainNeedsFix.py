@@ -424,13 +424,17 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
 
-    def on_close():
-        self.flash_state = False
-        self.game_window.destroy()
-        self.root.deiconify()
+    # ---------------- FIX: proper close handler ----------------
+        def on_close():
+            self.flash_state = False
+            self.game_window.destroy()
+            self.root.deiconify()
 
         self.game_window.protocol("WM_DELETE_WINDOW", on_close)
 
+        # ======================================================
+        # SCORE FRAME
+        # ======================================================
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
 
@@ -534,7 +538,7 @@ class LaserTagMain:
         self.timer_paused = False
 
         # ======================================================
-        # START LOOPS SAFELY
+        # START LOOPS
         # ======================================================
         self.buildScreen = False
 
@@ -651,28 +655,31 @@ class LaserTagMain:
         entry.pack()
         entry.focus_set()
 
-    def submit():
-        try:
-            result[0] = int(entry.get())
-            dialog.destroy()
-        except ValueError:
-            messagebox.showerror(
-            "Invalid",
-            "Enter a valid number",
-            parent=dialog
-            )
+    # ---------------- submit function ----------------
+        def submit():
+            try:
+                result[0] = int(entry.get())
+                dialog.destroy()
 
-            entry.bind("<Return>", lambda e: submit())
+            except ValueError:
+                messagebox.showerror(
+                    "Invalid",
+                    "Enter a valid number",
+                    parent=dialog
+                )
 
-            tk.Button(
-                dialog,
-                text="OK",
-                command=submit
-            ).pack(pady=10)
+        # ---------------- bindings (OUTSIDE except) ----------------
+        entry.bind("<Return>", lambda e: submit())
 
-            dialog.wait_window()
+        tk.Button(
+            dialog,
+            text="OK",
+            command=submit
+        ).pack(pady=10)
 
-            return result[0]
+        dialog.wait_window()
+
+        return result[0]
 
     # ======================================================
     # SPLASH
