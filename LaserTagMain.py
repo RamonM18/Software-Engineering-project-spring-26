@@ -83,6 +83,7 @@ class LaserTagMain:
         self.buildScreen = False
         self.buildScreenClosed = False
         self.gameStarted = False
+        self.flash_state = False
 
         self.build_interface()
 
@@ -381,6 +382,37 @@ class LaserTagMain:
 
         self.updateTeamScores()
 
+    def start_scoreFlashing(self):
+        self.flash_timer()
+
+    def flash_timer(self):
+        if self.flash_state is None:
+            return 
+        
+        red_total = 0
+        green_total = 0
+
+        for player in self.player_labels:
+            if player.team_code == 1:
+                red_total += player.get_score()
+            else:
+                green_total += player.get_score()
+
+        #winner will be flashing
+        if red_total > green_total:
+            color = "red" if self.flash_state else "darkred"
+            self.red_score_label.config(fg=color)
+        elif green_total > red_total:
+            color = "lime" if self.flash_state else "darkgreen"
+            self.green_score_label.config(fg=color)
+        
+        #toggling state
+        self.flash_state = not self.flash_state
+
+        self.root.after(500, self.flash_timer)
+
+
+
     # ======================================================
     # GAME SCREEN
     # ======================================================
@@ -394,6 +426,7 @@ class LaserTagMain:
         self.game_window.geometry("900x600")
 
         def on_close():
+            self.flash_state = None
             self.game_window.destroy()
             self.root.deiconify()
 
@@ -462,8 +495,41 @@ class LaserTagMain:
             lbl.pack()
             self.player_labels[p] = lbl
 
+        #readding box and static timer
+        action_frame = tk.Frame(self.game_window, bg ="black")
+        action_frame.pack(pady=20)
+
+        tk.Label(
+            action_frame, 
+            text="Current Game Action", 
+            fg="white", 
+            bg="black", 
+            font=("Arial", 14)
+        ).pack()
+
+        self.action_log = tk.Text(
+            action_frame, 
+            width=70, 
+            height=15, 
+            bg="navy", 
+            fg="white"
+        )
+        self.action_log.pack()
+
+        # TIMER
+        self.timer_label = tk.Label(
+            self.game_window, 
+            text="Time Remaining: 6:00", 
+            fg="white", 
+            bg="black", 
+            font=("Arial", 16)
+        )
+        self.timer_label.pack(pady=10)
+
         self.buildScreen = False
         self.poll_udp()
+
+        self.start_scoreFlashing()
 
     # ======================================================
     # MISC
@@ -634,6 +700,7 @@ class LaserTagMain:
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             self.game_window.after(50, self.poll_udp)
     
+
 
 # ==========================================================
 # RUN
