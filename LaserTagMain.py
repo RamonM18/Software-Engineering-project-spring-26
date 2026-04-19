@@ -609,49 +609,45 @@ class LaserTagMain:
                 entry.delete(0, tk.END)
         return result[0]
     
-    def enter_hid(self, playerName):
-
-        result = [None]
-
+    def edit_ip_address(self):
+        result = [None]  
         dialog = tk.Toplevel()
         dialog.title("Input")
         dialog.configure(bg="black")
         dialog.geometry("300x150")
-        dialog.grab_set()
-
-        tk.Label(
-            dialog,
-            text="Enter hardware ID for: " + playerName,
-            fg="cyan",
-            bg="black"
-        ).pack(pady=15)
-
-        entry = tk.Entry(dialog, width=20)
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the new IP address: ", fg="cyan", bg="black",
+                 font=("Arial", 15)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
+                         justify="center")
         entry.pack()
-        entry.focus_set()
-
+        entry.focus_set()  # Auto-focus the entry box
+    
         def submit():
+            user_input = entry.get().strip() # Get input and remove whitespace
             try:
-                result[0] = int(entry.get())
+                # This will validate if the string is a proper IPv4 or IPv6 address
+                ipaddress.ip_address(user_input)
+                
+                # If valid, store the string in result[0] and close the dialog
+                result[0] = user_input
                 dialog.destroy()
             except ValueError:
-                messagebox.showerror(
-                    "Invalid",
-                    "Enter a valid number",
-                    parent=dialog
-                )
+                # If the input isn't a valid IP, show an error and clear the entry box
+                messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
+                entry.delete(0, tk.END)
 
-        entry.bind("<Return>", lambda e: submit())
 
-        tk.Button(
-            dialog,
-            text="OK",
-            command=submit
-        ).pack(pady=10)
-
-        dialog.wait_window()
-
-        return result[0]
     # ======================================================
     # SPLASH
     # ======================================================
