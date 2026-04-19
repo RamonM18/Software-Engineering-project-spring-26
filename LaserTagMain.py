@@ -428,7 +428,7 @@ class LaserTagMain:
             self.root.deiconify()
 
         self.game_window.protocol("WM_DELETE_WINDOW", on_close)
-        self.game_window.bind("<F9", lambda e: self.test_add_points())
+        self.game_window.bind("<F9>", lambda e: self.test_add_points())
 
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
@@ -616,7 +616,7 @@ class LaserTagMain:
             first_player = list(self.player_labels.keys())[0]
             first_player.add_score(100)
             self.update_playerDisplay(first_player)
-        print(f"Added 100 points to {first_player.get_player_name()}")
+            print(f"Added 100 points to {first_player.get_player_name()}")
 
 
 # ==========================================================
