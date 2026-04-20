@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 import os
 import ipaddress
 import pygame
+import ipaddress
 from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
@@ -29,9 +30,6 @@ class AudioManager:
     def play_music(self, filename):
         if not self.ready:
             return
-        if not os.path.exists(filename):
-            print("Missing audio:", filename)
-            return
         try:
             pygame.mixer.music.load(filename)
             pygame.mixer.music.play()
@@ -41,15 +39,15 @@ class AudioManager:
     def play_sound(self, filename):
         if not self.ready:
             return
-        if not os.path.exists(filename):
-            print("Missing audio:", filename)
-            return
         try:
             sound = pygame.mixer.Sound(filename)
             sound.play()
         except Exception as e:
             print("Sound play failed:", e)
-
+            
+    def stop_music(self):
+        if self.ready:
+            pygame.mixer.music.stop()
 
 # ==========================================================
 # MAIN APP
@@ -72,8 +70,8 @@ class LaserTagMain:
         self.root.mainloop()
 
     # ======================================================
-    # STARTUP
-    # ======================================================
+# STARTUP
+# ======================================================
     def finish_startup(self):
 
         self.root.deiconify()
@@ -84,6 +82,8 @@ class LaserTagMain:
         self.buildScreen = False
         self.buildScreenClosed = False
         self.gameStarted = False
+
+        # FIX: initialize before any use
         self.flash_state = False
 
         self.build_interface()
@@ -278,7 +278,7 @@ class LaserTagMain:
             messagebox.showerror("Error", "Game already running.")
             return
 
-        self.audio.play_music("start.mp3")
+        self.audio.play_music("Track01.mp3")
 
         red_team = []
         green_team = []
@@ -300,7 +300,7 @@ class LaserTagMain:
                 self.equipmentToPlayer[hid] = p
 
             try:
-                self.udp_connection.send_to(p.get_player_num())
+                self.udp_connection.send_to(hid)
                 self.udp_connection.recv_from()
             except Exception as e:
                 print("UDP error:", e)
@@ -312,7 +312,6 @@ class LaserTagMain:
             30,
             lambda: self.show_play_action_screen(red_team, green_team)
         )
-
         self.gameStarted = True
 
     # ======================================================
@@ -337,9 +336,12 @@ class LaserTagMain:
         player.add_score(100)
         self.base_hit.add(equipment_id)
 
-        self.audio.play_sound("score.wav")
+        self.audio.play_sound("Track02.mp3")
 
         self.update_playerDisplay(player)
+
+        self.action_log.insert(tk.END, f"Player {player.get_player_name()} hit the {base_color} base!\n", base_color + "_tag")
+        self.action_log.see(tk.END) 
 
     # ======================================================
     # SCOREBOARD
@@ -387,8 +389,8 @@ class LaserTagMain:
         self.flash_timer()
 
     def flash_timer(self):
-        if self.flash_state is None:
-            return 
+        if not hasattr(self, "flash_state") or self.flash_state is None:
+            return
         
         red_total = 0
         green_total = 0
@@ -414,7 +416,7 @@ class LaserTagMain:
 
 
 
-    # ======================================================
+        # ======================================================
     # GAME SCREEN
     # ======================================================
     def show_play_action_screen(self, red_team, green_team):
@@ -426,13 +428,17 @@ class LaserTagMain:
         self.game_window.configure(bg="black")
         self.game_window.geometry("900x600")
 
+    # ---------------- FIX: proper close handler ----------------
         def on_close():
-            self.flash_state = None
+            self.flash_state = False
             self.game_window.destroy()
             self.root.deiconify()
 
         self.game_window.protocol("WM_DELETE_WINDOW", on_close)
 
+        # ======================================================
+        # SCORE FRAME
+        # ======================================================
         score_frame = tk.Frame(self.game_window, bg="black")
         score_frame.pack(pady=10)
 
@@ -496,46 +502,61 @@ class LaserTagMain:
             lbl.pack()
             self.player_labels[p] = lbl
 
-        #readding box and static timer
-        action_frame = tk.Frame(self.game_window, bg ="black")
+        # ======================================================
+        # ACTION LOG
+        # ======================================================
+        action_frame = tk.Frame(self.game_window, bg="black")
         action_frame.pack(pady=20)
 
         tk.Label(
-            action_frame, 
-            text="Current Game Action", 
-            fg="white", 
-            bg="black", 
+            action_frame,
+            text="Current Game Action",
+            fg="white",
+            bg="black",
             font=("Arial", 14)
         ).pack()
 
         self.action_log = tk.Text(
-            action_frame, 
-            width=70, 
-            height=15, 
-            bg="navy", 
+            action_frame,
+            width=70,
+            height=15,
+            bg="navy",
             fg="white"
         )
         self.action_log.pack()
+        self.action_log.tag_config("red_tag", foreground="red")
+        self.action_log.tag_config("green_tag", foreground="lime")
 
-        # TIMER
+        # ======================================================
+        # TIMER SETUP
+        # ======================================================
         self.timer_label = tk.Label(
-            self.game_window, 
-            text="Time Remaining: 6:00", 
-            fg="white", 
-            bg="black", 
+            self.game_window,
+            text="Time Remaining: 6:00",
+            fg="white",
+            bg="black",
             font=("Arial", 16)
         )
         self.timer_label.pack(pady=10)
         self.udp_connection.send_to("202")
 
+        self.time_remaining = 360
+        self.timer_running = True
+        self.timer_paused = False
+
+        # ======================================================
+        # START LOOPS
+        # ======================================================
         self.buildScreen = False
-        self.run_traffic()
 
-        self.start_scoreFlashing()
-
-    # ======================================================
-    # MISC
-    # ======================================================
+        self.game_window.after(100, self.update_timer)
+        self.udp_connection.send_to("202")
+        self.stopUDP = False
+        self.game_window.after(100, self.run_traffic)
+        self.game_window.after(100, self.start_scoreFlashing)
+        # ======================================================
+        # MISC
+        # ======================================================
     def edit_game(self):
         print("Edit Game")
 
@@ -550,7 +571,7 @@ class LaserTagMain:
             self.root.deiconify()
             self.build_frame.tkraise()
 
-        self.buildScreen = not self.buildScreen
+            self.buildScreen = not self.buildScreen
 
     def view_game(self):
         print("View Game")
@@ -567,10 +588,63 @@ class LaserTagMain:
         for gid, gcode in self.green_entries:
             gid.delete(0, tk.END)
             gcode.delete(0, tk.END)
+    def update_timer(self):
+        if not self.timer_running:
+            return
 
-    # ======================================================
-    # HID ENTRY
-    # ======================================================
+        if self.timer_paused:
+            self.game_window.after(1000, self.update_timer)
+            return
+
+        if self.time_remaining <= 0:
+            self.end_game()
+            return
+
+        minutes = self.time_remaining // 60
+        seconds = self.time_remaining % 60
+
+        self.timer_label.config(
+            text=f"Time Remaining: {minutes}:{seconds:02d}"
+        )
+
+        self.time_remaining -= 1
+        self.game_window.after(1000, self.update_timer)
+    def end_game(self):
+
+        # stop timer loop
+        self.timer_running = False
+        self.timer_paused = False
+
+        # stop flashing loop (important)
+        self.flash_state = None
+
+        # stop music
+        try:
+            self.audio.stop_music()
+        except:
+            pass
+
+        # show final message
+        try:
+            if hasattr(self, "action_log"):
+                self.action_log.insert(tk.END, "\nGAME OVER\n")
+        except:
+            pass
+
+        self.udp_connection.send_to("221")
+        self.stopUDP = True
+        # disable further UDP polling safely
+        try:
+            self.udp_connection = None
+        except:
+            pass
+
+        # optional: freeze UI interaction
+        if hasattr(self, "game_window") and self.game_window.winfo_exists():
+            self.game_window.title("Game Over")
+        # ======================================================
+        # HID ENTRY
+        # ======================================================
     def enter_hid(self, playerName):
         result = [None]  
         dialog = tk.Toplevel()
@@ -593,12 +667,14 @@ class LaserTagMain:
         entry = tk.Entry(dialog, width=20, font=("Arial", 15),
                          justify="center")
         entry.pack()
-        entry.focus_set()  # Auto-focus the entry box
-    
+        entry.focus_set()
+
+    # ---------------- submit function ----------------
         def submit():
             try:
                 result[0] = int(entry.get())
                 dialog.destroy()
+
             except ValueError:
                 messagebox.showerror("Invalid Input", "Please enter a valid integer.", parent=dialog)
                 entry.delete(0, tk.END)
@@ -679,7 +755,7 @@ class LaserTagMain:
 
         splash.geometry(f"+{x}+{y}")
 
-        self.audio.play_music("intro.mp3")
+        self.audio.play_music("Track02.mp3")
 
         splash.after(3000, splash.destroy)
     
@@ -768,8 +844,82 @@ class LaserTagMain:
 
                 self.game_window.after(50, self.run_traffic)
     
+    def edit_ip_address(self):
+        result = [None]  
+        dialog = tk.Toplevel()
+        dialog.title("Input")
+        dialog.configure(bg="black")
+        dialog.geometry("300x150")
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the new IP address: ", fg="cyan", bg="black",
+                 font=("Arial", 15)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
+                         justify="center")
+        entry.pack()
+        entry.focus_set()  # Auto-focus the entry box
+    
+        def submit():
+            user_input = entry.get().strip() # Get input and remove whitespace
+            try:
+                # This will validate if the string is a proper IPv4 or IPv6 address
+                ipaddress.ip_address(user_input)
+                
+                # If valid, store the string in result[0] and close the dialog
+                result[0] = user_input
+                dialog.destroy()
+            except ValueError:
+                # If the input isn't a valid IP, show an error and clear the entry box
+                messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
+                entry.delete(0, tk.END)
 
+    def run_traffic(self):
+        #print("Function being called: run_traffic") #testing purposes
+        if hasattr(self, 'game_window') and self.game_window.winfo_exists():
+            code = (self.udp_connection.recv_from())
+            if code:
+                try:
+                    #self.process_hit_message(code)
+                    #self.codes = code.split(":")
+                    self.int_code1 = int(code[0:1])
+                    self.int_code2 = int(code[2:4]) 
+                    self.udp_connection.send_to("404")
+                    if self.int_code2 == 43:
+                        self.baseScoring(self.int_code1, 'green')
+                    elif self.int_code2 == 53:
+                        self.baseScoring(self.int_code1, 'red')
+                    elif self.int_code1 % 2 == self.int_code2 % 2: # They are on the same team
+                        self.udp_connection.send_to("504")
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
+                        player1.add_score(-10)
+                        player2.add_score(-10)
+                    else:
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
+                        player1.add_score(10)
 
+                    self.refresh_player_scores()
+                except ValueError:
+                    print("Error in parsing int from received code")
+
+        if not self.stopUDP:
+            self.game_window.after(50, self.run_traffic)
 # ==========================================================
 # RUN
 # ==========================================================
