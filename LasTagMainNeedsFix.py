@@ -299,7 +299,7 @@ class LaserTagMain:
                 self.equipmentToPlayer[hid] = p
 
             try:
-                self.udp_connection.send_to(p.get_player_num())
+                self.udp_connection.send_to(hid)
                 self.udp_connection.recv_from()
             except Exception as e:
                 print("UDP error:", e)
@@ -584,7 +584,7 @@ class LaserTagMain:
         if not self.timer_running:
             return
 
-        if self.timer_paused:
+        if not self.timer_paused:
             self.game_window.after(1000, self.update_timer)
             return
 
@@ -809,7 +809,7 @@ class LaserTagMain:
                 entry.delete(0, tk.END)
 
     def run_traffic(self):
-        print("Function being called: run_traffic")
+        #print("Function being called: run_traffic") #testing purposes
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             code = (self.udp_connection.recv_from())
             if code:
