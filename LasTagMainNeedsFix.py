@@ -312,7 +312,6 @@ class LaserTagMain:
             lambda: self.show_play_action_screen(red_team, green_team)
         )
         self.gameStarted = True
-        self.udp_connection.send_to("202")
 
     # ======================================================
     # BASE SCORING
@@ -544,6 +543,7 @@ class LaserTagMain:
         self.buildScreen = False
 
         self.game_window.after(100, self.update_timer)
+        self.udp_connection.send_to("202")
         self.game_window.after(100, self.run_traffic)
         self.game_window.after(100, self.start_scoreFlashing)
         # ======================================================
@@ -623,6 +623,7 @@ class LaserTagMain:
         except:
             pass
 
+        self.udp_connection.send_to("221")
         # disable further UDP polling safely
         try:
             self.udp_connection = None
@@ -808,6 +809,7 @@ class LaserTagMain:
                 entry.delete(0, tk.END)
 
     def run_traffic(self):
+        print("Function being called: run_traffic")
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             code = (self.udp_connection.recv_from())
             if code:
@@ -835,7 +837,7 @@ class LaserTagMain:
                 except ValueError:
                     print("Error in parsing int from received code")
 
-                self.game_window.after(50, self.run_traffic)
+        self.game_window.after(50, self.run_traffic)
 # ==========================================================
 # RUN
 # ==========================================================
