@@ -339,7 +339,7 @@ class LaserTagMain:
 
         self.update_playerDisplay(player)
 
-        self.action_log.insert(tk.END, f"Player {player.get_player_name()} hit the {base_color} base!\n")
+        self.action_log.insert(tk.END, f"Player {player.get_player_name()} hit the {base_color} base!\n", base_color + "_tag")
         self.action_log.see(tk.END) 
 
     # ======================================================
@@ -523,6 +523,8 @@ class LaserTagMain:
             fg="white"
         )
         self.action_log.pack()
+        self.action_log.tag_config("red_tag", foreground="red")
+        self.action_log.tag_config("green_tag", foreground="lime")
 
         # ======================================================
         # TIMER SETUP
