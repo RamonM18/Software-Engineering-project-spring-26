@@ -526,6 +526,7 @@ class LaserTagMain:
             font=("Arial", 16)
         )
         self.timer_label.pack(pady=10)
+        self.udp_connection.send_to("202")
 
         self.buildScreen = False
         self.run_traffic()
