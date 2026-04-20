@@ -311,8 +311,8 @@ class LaserTagMain:
             30,
             lambda: self.show_play_action_screen(red_team, green_team)
         )
-
         self.gameStarted = True
+        self.udp_connection.send_to("202")
 
     # ======================================================
     # BASE SCORING
@@ -544,7 +544,7 @@ class LaserTagMain:
         self.buildScreen = False
 
         self.game_window.after(100, self.update_timer)
-        self.game_window.after(100, self.poll_udp)
+        self.game_window.after(100, self.run_traffic)
         self.game_window.after(100, self.start_scoreFlashing)
         # ======================================================
         # MISC
@@ -807,6 +807,35 @@ class LaserTagMain:
                 messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
                 entry.delete(0, tk.END)
 
+    def run_traffic(self):
+        if hasattr(self, 'game_window') and self.game_window.winfo_exists():
+            code = (self.udp_connection.recv_from())
+            if code:
+                try:
+                    #self.codes = code.split(":")
+                    self.int_code1 = int(code[0:1])
+                    self.int_code2 = int(code[2:4]) 
+                    self.udp_connection.send_to("404")
+                    if self.int_code2 == 43:
+                        self.baseScoring(self.int_code1, 'green')
+                    elif self.int_code2 == 53:
+                        self.baseScoring(self.int_code1, 'red')
+                    elif self.int_code1 % 2 == self.int_code2 % 2: # They are on the same team
+                        self.udp_connection.send_to("504")
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        player1.add_score(-10)
+                        player2.add_score(-10)
+                    else:
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        player1.add_score(10)
+                except ValueError:
+                    print("Error in parsing int from received code")
+
+                self.game_window.after(50, self.run_traffic)
 # ==========================================================
 # RUN
 # ==========================================================
