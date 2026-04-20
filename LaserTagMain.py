@@ -549,6 +549,7 @@ class LaserTagMain:
 
         self.game_window.after(100, self.update_timer)
         self.udp_connection.send_to("202")
+        self.stopUDP = False
         self.game_window.after(100, self.run_traffic)
         self.game_window.after(100, self.start_scoreFlashing)
         # ======================================================
@@ -629,6 +630,7 @@ class LaserTagMain:
             pass
 
         self.udp_connection.send_to("221")
+        self.stopUDP = True
         # disable further UDP polling safely
         try:
             self.udp_connection = None
@@ -849,7 +851,8 @@ class LaserTagMain:
                 except ValueError:
                     print("Error in parsing int from received code")
 
-        self.game_window.after(50, self.run_traffic)
+        if not self.stopUDP:
+            self.game_window.after(50, self.run_traffic)
 # ==========================================================
 # RUN
 # ==========================================================
