@@ -6,6 +6,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 import pygame
+import ipaddress
 from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
