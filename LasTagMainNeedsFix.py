@@ -584,7 +584,7 @@ class LaserTagMain:
         if not self.timer_running:
             return
 
-        if not self.timer_paused:
+        if self.timer_paused:
             self.game_window.after(1000, self.update_timer)
             return
 
@@ -814,6 +814,7 @@ class LaserTagMain:
             code = (self.udp_connection.recv_from())
             if code:
                 try:
+                    #self.process_hit_message(code)
                     #self.codes = code.split(":")
                     self.int_code1 = int(code[0:1])
                     self.int_code2 = int(code[2:4]) 
@@ -834,6 +835,8 @@ class LaserTagMain:
                         player2 = self.equipmentToPlayer[self.int_code2]
                         print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
                         player1.add_score(10)
+
+                    self.refresh_player_scores()
                 except ValueError:
                     print("Error in parsing int from received code")
 
