@@ -339,6 +339,9 @@ class LaserTagMain:
 
         self.update_playerDisplay(player)
 
+        self.action_log.insert(tk.END, f"Player {player.get_player_name()} hit the {base_color} base!\n")
+        self.action_log.see(tk.END) 
+
     # ======================================================
     # SCOREBOARD
     # ======================================================
@@ -592,15 +595,15 @@ class LaserTagMain:
             self.end_game()
             return
 
-            minutes = self.time_remaining // 60
-            seconds = self.time_remaining % 60
+        minutes = self.time_remaining // 60
+        seconds = self.time_remaining % 60
 
-            self.timer_label.config(
-                text=f"Time Remaining: {minutes}:{seconds:02d}"
-            )
+        self.timer_label.config(
+            text=f"Time Remaining: {minutes}:{seconds:02d}"
+        )
 
-            self.time_remaining -= 1
-            self.game_window.after(1000, self.update_timer)
+        self.time_remaining -= 1
+        self.game_window.after(1000, self.update_timer)
     def end_game(self):
 
         # stop timer loop
@@ -828,12 +831,16 @@ class LaserTagMain:
                         player1 = self.equipmentToPlayer[self.int_code1]
                         player2 = self.equipmentToPlayer[self.int_code2]
                         print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
                         player1.add_score(-10)
                         player2.add_score(-10)
                     else:
                         player1 = self.equipmentToPlayer[self.int_code1]
                         player2 = self.equipmentToPlayer[self.int_code2]
                         print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
                         player1.add_score(10)
 
                     self.refresh_player_scores()
