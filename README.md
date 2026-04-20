@@ -24,6 +24,19 @@ Table with team members' name and username
 8. Run the install script and it will have directions for you in the terminal on how to compile and run the program
     - bash install.sh
     - if it asks for a password when running install.sh, enter student as the password.
+# PLEASE NOTE: Pygames is no longer supported, to run the game correctly with music, you will need to use and older version other than current python version
+
+### Running with traffic genarator DO THIS FIRST
+1. Navigate to project directory
+   - cd ~/Software-Engineering-project-spring-26
+2. Pull changes from GitHub
+   - git pull origin main
+3. run this line: python3 python_trafficgenarator_v2.py
+4. You will then be prompted to enter hardware ID for the two players on each team
+5. Red teams should have an odd hardware ID like 1 and 3
+6. Green teams should have an even hardware ID like 2 and 4
+7. Please remember these because you will need to input them again in the main program after you enter each team member and press F3 to start the game
+8. Open a new terminal and follow the next section's instructions to run the main program file for the game 
 
 ### Running the program after first time setup
 1. Navigate to project directory
@@ -34,7 +47,6 @@ Table with team members' name and username
    - python3 LaserTagMain.py
 
 ## How the Program Works
-
 When the program starts:
 - A spash screen is displayed for a few seconds
 - The system automatically transitions to the Player Entry Screen
