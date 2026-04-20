@@ -88,7 +88,7 @@ class LaserTagMain:
         self.build_interface()
 
         self.root.bind("<F1>", lambda e: self.edit_game())
-        self.root.bind("<F2>", lambda e: self.parameters())
+        self.root.bind("<F2>", lambda e: self.edit_ip_address())
         self.root.bind("<F3>", lambda e: self.start_game())
         self.root.bind("<F5>", lambda e: self.display_switch())
         self.root.bind("<F8>", lambda e: self.view_game())
