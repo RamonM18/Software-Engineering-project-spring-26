@@ -576,16 +576,22 @@ class LaserTagMain:
         dialog.title("Input")
         dialog.configure(bg="black")
         dialog.geometry("300x150")
-        dialog.grab_set()
-
-        tk.Label(
-            dialog,
-            text="Enter hardware ID for: " + playerName,
-            fg="cyan",
-            bg="black"
-        ).pack(pady=15)
-
-        entry = tk.Entry(dialog, width=20)
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the hardware ID for: "+playerName, fg="cyan", bg="black",
+                 font=("Arial", 15)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
+                         justify="center")
+        entry.pack()
         entry.focus_set()  # Auto-focus the entry box
     
         def submit():
@@ -593,21 +599,17 @@ class LaserTagMain:
                 result[0] = int(entry.get())
                 dialog.destroy()
             except ValueError:
-                messagebox.showerror(
-                    "Invalid",
-                    "Enter a valid number",
-                    parent=dialog
-                )
-
-        entry.bind("<Return>", lambda e: submit())
-
-        tk.Button(
-            dialog,
-            text="OK",
-            command=submit
-        ).pack(pady=10)
-
-        dialog.wait_window()
+                messagebox.showerror("Invalid Input", "Please enter a valid integer.", parent=dialog)
+                entry.delete(0, tk.END)
+    
+        def on_enter(event):
+            submit()
+    
+        entry.bind("<Return>", on_enter)  # Allow Enter key to submit
+        tk.Button(dialog, text="OK", width=10, command=submit).pack(pady=10)
+    
+        dialog.wait_window()  # Wait until dialog closes before returning
+        return result[0]
     
     def edit_ip_address(self):
         result = [None]  
