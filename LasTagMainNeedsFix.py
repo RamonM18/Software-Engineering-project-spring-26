@@ -6,6 +6,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 import pygame
+import ipaddress
 from player import Player
 from player_database import PlayerDatabase
 from udp_connection import UDPConnection
@@ -178,7 +179,7 @@ class LaserTagMain:
 
         buttons = [
             ("F1 Edit Game", self.edit_game),
-            ("F2 Parameters", self.parameters),
+            ("F2 Edit IP Address", self.edit_ip_address),
             ("F3 Start Game", self.start_game),
             ("F5 Switch Display", self.display_switch),
             ("F8 View Game", self.view_game),
@@ -298,7 +299,7 @@ class LaserTagMain:
                 self.equipmentToPlayer[hid] = p
 
             try:
-                self.udp_connection.send_to(p.get_player_num())
+                self.udp_connection.send_to(hid)
                 self.udp_connection.recv_from()
             except Exception as e:
                 print("UDP error:", e)
@@ -310,7 +311,6 @@ class LaserTagMain:
             30,
             lambda: self.show_play_action_screen(red_team, green_team)
         )
-
         self.gameStarted = True
 
     # ======================================================
@@ -338,6 +338,9 @@ class LaserTagMain:
         self.audio.play_sound("Track02.mp3")
 
         self.update_playerDisplay(player)
+
+        self.action_log.insert(tk.END, f"Player {player.get_player_name()} hit the {base_color} base!\n", base_color + "_tag")
+        self.action_log.see(tk.END) 
 
     # ======================================================
     # SCOREBOARD
@@ -520,6 +523,8 @@ class LaserTagMain:
             fg="white"
         )
         self.action_log.pack()
+        self.action_log.tag_config("red_tag", foreground="red")
+        self.action_log.tag_config("green_tag", foreground="lime")
 
         # ======================================================
         # TIMER SETUP
@@ -543,7 +548,8 @@ class LaserTagMain:
         self.buildScreen = False
 
         self.game_window.after(100, self.update_timer)
-        self.game_window.after(100, self.poll_udp)
+        self.udp_connection.send_to("202")
+        self.game_window.after(100, self.run_traffic)
         self.game_window.after(100, self.start_scoreFlashing)
         # ======================================================
         # MISC
@@ -591,15 +597,15 @@ class LaserTagMain:
             self.end_game()
             return
 
-            minutes = self.time_remaining // 60
-            seconds = self.time_remaining % 60
+        minutes = self.time_remaining // 60
+        seconds = self.time_remaining % 60
 
-            self.timer_label.config(
-                text=f"Time Remaining: {minutes}:{seconds:02d}"
-            )
+        self.timer_label.config(
+            text=f"Time Remaining: {minutes}:{seconds:02d}"
+        )
 
-            self.time_remaining -= 1
-            self.game_window.after(1000, self.update_timer)
+        self.time_remaining -= 1
+        self.game_window.after(1000, self.update_timer)
     def end_game(self):
 
         # stop timer loop
@@ -622,6 +628,7 @@ class LaserTagMain:
         except:
             pass
 
+        self.udp_connection.send_to("221")
         # disable further UDP polling safely
         try:
             self.udp_connection = None
@@ -768,8 +775,81 @@ class LaserTagMain:
         if hasattr(self, 'game_window') and self.game_window.winfo_exists():
             self.game_window.after(50, self.poll_udp)
     
+    def edit_ip_address(self):
+        result = [None]  
+        dialog = tk.Toplevel()
+        dialog.title("Input")
+        dialog.configure(bg="black")
+        dialog.geometry("300x150")
+        dialog.grab_set()  
+        dialog.resizable(False, False)
+        
+        dialog.update_idletasks()
+        screen_w = dialog.winfo_screenwidth()
+        screen_h = dialog.winfo_screenheight()
+        x = (screen_w // 2) - 150
+        y = (screen_h // 2) - 75
+        dialog.geometry(f"+{x}+{y}")
+    
+        tk.Label(dialog, text="Enter the new IP address: ", fg="cyan", bg="black",
+                 font=("Arial", 15)).pack(pady=15)
+    
+        entry = tk.Entry(dialog, width=20, font=("Arial", 15),
+                         justify="center")
+        entry.pack()
+        entry.focus_set()  # Auto-focus the entry box
+    
+        def submit():
+            user_input = entry.get().strip() # Get input and remove whitespace
+            try:
+                # This will validate if the string is a proper IPv4 or IPv6 address
+                ipaddress.ip_address(user_input)
+                
+                # If valid, store the string in result[0] and close the dialog
+                result[0] = user_input
+                dialog.destroy()
+            except ValueError:
+                # If the input isn't a valid IP, show an error and clear the entry box
+                messagebox.showerror("Invalid Input", "Please enter a valid IP address (e.g., 127.0.0.1).", parent=dialog)
+                entry.delete(0, tk.END)
 
+    def run_traffic(self):
+        #print("Function being called: run_traffic") #testing purposes
+        if hasattr(self, 'game_window') and self.game_window.winfo_exists():
+            code = (self.udp_connection.recv_from())
+            if code:
+                try:
+                    #self.process_hit_message(code)
+                    #self.codes = code.split(":")
+                    self.int_code1 = int(code[0:1])
+                    self.int_code2 = int(code[2:4]) 
+                    self.udp_connection.send_to("404")
+                    if self.int_code2 == 43:
+                        self.baseScoring(self.int_code1, 'green')
+                    elif self.int_code2 == 53:
+                        self.baseScoring(self.int_code1, 'red')
+                    elif self.int_code1 % 2 == self.int_code2 % 2: # They are on the same team
+                        self.udp_connection.send_to("504")
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
+                        player1.add_score(-10)
+                        player2.add_score(-10)
+                    else:
+                        player1 = self.equipmentToPlayer[self.int_code1]
+                        player2 = self.equipmentToPlayer[self.int_code2]
+                        print(f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!")
+                        self.action_log.insert(tk.END, f"Player {player1.get_player_name()} hit player {player2.get_player_name()}!\n")
+                        self.action_log.see(tk.END) 
+                        player1.add_score(10)
 
+                    self.refresh_player_scores()
+                except ValueError:
+                    print("Error in parsing int from received code")
+
+        self.game_window.after(50, self.run_traffic)
 # ==========================================================
 # RUN
 # ==========================================================
