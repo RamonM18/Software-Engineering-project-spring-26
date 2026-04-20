@@ -24,7 +24,7 @@ Table with team members' name and username
 8. Run the install script and it will have directions for you in the terminal on how to compile and run the program
     - bash install.sh
     - if it asks for a password when running install.sh, enter student as the password.
-# PLEASE NOTE: Pygames is no longer supported, to run the game and hear the music, you will need to have an older version of python. The game will still run using the install script but no music will be heard
+# PLEASE NOTE: Pygames is no longer supported, to run the game and hear the music, you may have to run an older version of python. The game will still run using the install script but music might not play
 
 ### Running with traffic genarator DO THIS FIRST
 1. Navigate to project directory
